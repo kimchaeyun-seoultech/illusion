@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rubin's Vase — Optical Illusion</title>
+  <style>
+    @font-face { font-family: 'Paperlogy'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-4Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+    @font-face { font-family: 'Paperlogy'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-7Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+    @font-face { font-family: 'Paperlogy'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-9Black.woff2') format('woff2'); font-weight: 900; font-display: swap; }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --black: #0a0a0a; --white: #ffffff; --gray: #888; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Paperlogy', sans-serif; background: var(--white); color: var(--black); min-width: 900px; overflow-x: hidden; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: stretch; height: 64px; background: var(--black); }
+    .nav-left { display: flex; flex-direction: column; justify-content: center; padding: 10px 24px; flex: 1; }
+    .nav-tagline { font-size: 12px; font-weight: 700; color: var(--white); line-height: 1.5; }
+    .nav-right { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; padding-top: 10px; }
+    .nav-site-title { font-size: 13px; font-weight: 700; color: var(--white); padding: 0 24px; }
+    .nav-links { display: flex; height: 32px; }
+    .nav-links a { display: flex; align-items: center; padding: 0 28px; font-size: 13px; font-weight: 700; color: var(--black); background: var(--white); text-decoration: none; border-left: 1px solid #ccc; }
+    .nav-links a:first-child { border-left: none; }
+    .nav-links a:hover { background: #e8e8e8; }
+
+    /* HERO */
+    .hero {
+      margin-top: 64px;
+      height: calc(100vh - 64px);
+      display: flex; flex-direction: column;
+      justify-content: space-between;
+      padding: 48px;
+      position: relative;
+      background: var(--white);
+    }
+    .hero-title { font-size: clamp(48px, 7vw, 96px); font-weight: 900; line-height: 1.0; letter-spacing: -0.03em; }
+    .scroll-hint { position: absolute; bottom: 48px; right: 48px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--gray); display: flex; align-items: center; gap: 10px; z-index: 2; }
+    .scroll-hint::after { content: ''; display: block; width: 1px; height: 48px; background: var(--gray); animation: scrollline 1.5s ease-in-out infinite; }
+    @keyframes scrollline { 0%,100%{opacity:0.3} 50%{opacity:1} }
+
+    /* STAGE */
+    .stage-scroll { height: 400vh; position: relative; }
+    .stage-sticky {
+      position: sticky; top: 64px;
+      height: calc(100vh - 64px);
+      display: flex; align-items: center; justify-content: center;
+      border-top: 1px solid var(--black);
+      overflow: hidden;
+    }
+
+    /* 이미지 두 개 겹치기 */
+    .img-wrap {
+      position: relative;
+      height: calc(100vh - 160px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .img-wrap img {
+      position: absolute;
+      height: 100%;
+      width: auto;
+      max-width: 600px;
+      object-fit: contain;
+      transition: none;
+    }
+    .img-wrap .img2 { opacity: 0; }
+
+    .stage-caption {
+      position: absolute; top: 48px; left: 48px;
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--gray); z-index: 10;
+    }
+
+    /* EXPLANATION */
+    .explanation { padding: 120px 48px; display: grid; grid-template-columns: 220px 1fr 1fr; gap: 0; align-items: start; border-top: 1px solid var(--black); }
+    .exp-label { font-size: clamp(40px, 2vw, 72px); font-weight: 900; line-height: 0.9; writing-mode: vertical-rl; text-orientation: mixed; letter-spacing: 0.1em; align-self: stretch; }
+    .exp-col { padding: 0 40px; }
+    .exp-col p { font-size: 14px; line-height: 1.85; color: var(--black); margin-bottom: 1.6em; word-break: keep-all; }
+    .exp-col p:last-child { margin-bottom: 0; }
+    footer {
+      background: #0a0a0a;
+      color: #ffffff;
+      padding: 56px 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 48px;
+    }
+    .footer-col { display: flex; flex-direction: column; gap: 12px; }
+    .footer-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #888; margin-bottom: 4px; }
+    .footer-title { font-size: 15px; font-weight: 700; line-height: 1.5; color: #ffffff; }
+    .footer-sub { font-size: 12px; color: #888; letter-spacing: 0.04em; }
+    .footer-contact { font-size: 13px; color: #ccc; line-height: 2; }
+    .footer-copy { font-size: 11px; color: #555; margin-top: 8px; letter-spacing: 0.04em; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-left"><div class="nav-tagline">Same image<br>different brain<br>different answer</div></div>
+    <div class="nav-right">
+      <div class="nav-site-title">Optical Illusion</div>
+      <div class="nav-links">
+        <a href="index.html#types">←</a>
+        <a href="index.html#intro">Intro</a>
+        <a href="index.html#types">Types</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <img src="vase.png" alt="rubin's vase" style="display:block; width:100%; height:auto; max-height:calc(100vh - 320px); object-fit:contain;">
+    <h1 class="hero-title">Rubin's Vase</h1>
+  </section>
+
+  <!-- STAGE -->
+  <div class="stage-scroll" id="stage-scroll">
+    <div class="stage-sticky">
+      <div class="stage-caption" id="stage-caption">두 얼굴이 보인다</div>
+      <div class="img-wrap">
+        <img src="rubin1.png" class="img1" id="img1" alt="faces" style="opacity: 1;">
+        <img src="rubin2.png" class="img2" id="img2" alt="vase" style="opacity: 0;">
+      </div>
+    </div>
+  </div>
+
+  <!-- EXPLANATION -->
+  <section class="explanation">
+    <div class="exp-label">루빈의 꽃병</div>
+    <div class="exp-col">
+      <p>루빈의 꽃병(Rubin's Vase)은 1915년 덴마크의 심리학자 에드가 루빈(Edgar Rubin)이 발표한 다의적 도형이다. 검정 배경 위의 흰 꽃병으로도, 흰 배경 위의 두 얼굴로도 읽히는 이 이미지는 같은 정보가 두 가지 완전히 다른 해석을 동시에 허용한다는 것을 보여준다.</p>
+      <p>이 착시의 핵심은 전경과 배경의 관계다. 뇌는 시각 장면에서 하나를 전경(figure)으로, 나머지를 배경(ground)으로 처리한다. 꽃병을 전경으로 보면 두 얼굴은 배경이 되고, 얼굴을 전경으로 보면 꽃병은 배경이 된다. 둘을 동시에 전경으로 볼 수는 없다.</p>
+    </div>
+    <div class="exp-col">
+      <p>루빈의 꽃병은 게슈탈트 심리학의 핵심 개념인 "전경-배경 분리(Figure-Ground Segregation)"를 설명하는 데 가장 많이 사용되는 사례다. 뇌는 의식적인 노력 없이 자동으로 전경과 배경을 구분하는데, 이 이미지는 그 과정이 얼마나 임의적일 수 있는지를 드러낸다.</p>
+      <p>흥미로운 점은 두 해석 사이를 의도적으로 전환할 수 있다는 것이다. 꽃병에서 얼굴로, 얼굴에서 꽃병으로. 하지만 아무리 노력해도 두 가지를 동시에 볼 수는 없다. 뇌는 하나의 해석만을 선택한다.</p>
+    </div>
+  </section>
+
+ <footer>
+    <div class="footer-col">
+      <div class="footer-label">Project</div>
+      <div class="footer-title">Optical Illusion<br>Archive</div>
+      <div class="footer-sub">웹 퍼블리싱 기말 프로젝트</div>
+      <div class="footer-sub">2025. 06.</div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-label">About</div>
+      <div class="footer-title" style="font-size:13px; font-weight:400; line-height:1.8; color:#aaa;">
+        눈은 보지 않는다. 예측한다.<br>
+        이 아카이브는 시각이 객관적 기록이 아니라<br>
+        능동적 해석이라는 것의 증거들을 모은다.
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-label">Contact</div>
+      <div class="footer-contact">
+        +82 10-7714-0155<br>
+        kcyhuman@seoultech.ac.kr<br>
+        Seoul, Republic of Korea
+      </div>
+      <div class="footer-copy">
+        24101008 김채윤<br>
+        © 2026 Optical Illusion Archive. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function clamp(v, a, b) { return Math.min(b, Math.max(a, v)); }
+    function invlerp(a, b, v) { return clamp((v - a) / (b - a), 0, 1); }
+
+    function onScroll() {
+      const el = document.getElementById('stage-scroll');
+      const rect = el.getBoundingClientRect();
+      const scrollable = el.offsetHeight - window.innerHeight;
+      const scrolled = -(rect.top - 64);
+      const progress = clamp(scrolled / scrollable, 0, 1);
+
+      // phase1: 0~0.4 — img1(얼굴) 유지
+      // phase2: 0.4~0.7 — img1 fade out, img2(꽃병) fade in
+      // phase3: 0.7~1.0 — img2 유지
+      const p = invlerp(0.4, 0.7, progress);
+
+      document.getElementById('img1').style.opacity = 1 - p;
+      document.getElementById('img2').style.opacity = p;
+
+      const cap = document.getElementById('stage-caption');
+      if      (progress < 0.4) cap.textContent = '두 얼굴이 보인다';
+      else if (progress < 0.7) cap.textContent = '같은 이미지다';
+      else                     cap.textContent = '꽃병이 보인다';
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  </script>
+
+
+
+</body>
+</html>

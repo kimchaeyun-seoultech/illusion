@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+	<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kanizsa Triangle — Optical Illusion</title>
+  <style>
+    @font-face { font-family: 'Paperlogy'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-4Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+    @font-face { font-family: 'Paperlogy'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-7Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+    @font-face { font-family: 'Paperlogy'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-9Black.woff2') format('woff2'); font-weight: 900; font-display: swap; }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --black: #0a0a0a; --white: #ffffff; --gray: #888; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Paperlogy', sans-serif; background: var(--white); color: var(--black); min-width: 900px; overflow-x: hidden; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: stretch; height: 64px; background: var(--black); }
+    .nav-left { display: flex; flex-direction: column; justify-content: center; padding: 10px 24px; flex: 1; }
+    .nav-tagline { font-size: 12px; font-weight: 700; color: var(--white); line-height: 1.5; }
+    .nav-right { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; padding-top: 10px; }
+    .nav-site-title { font-size: 13px; font-weight: 700; color: var(--white); padding: 0 24px; }
+    .nav-links { display: flex; height: 32px; }
+    .nav-links a { display: flex; align-items: center; padding: 0 28px; font-size: 13px; font-weight: 700; color: var(--black); background: var(--white); text-decoration: none; border-left: 1px solid #ccc; }
+    .nav-links a:first-child { border-left: none; }
+    .nav-links a:hover { background: #e8e8e8; }
+
+    .hero { margin-top: 64px; height: calc(100vh - 64px); display: flex; flex-direction: column; justify-content: space-between; padding: 48px; position: relative; overflow: hidden; background: var(--white); border-bottom: 1px solid var(--black); }
+    .hero-title { font-size: clamp(48px, 7vw, 96px); font-weight: 900; line-height: 1.0; letter-spacing: -0.03em; }
+    .scroll-hint { position: absolute; bottom: 48px; right: 48px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--gray); display: flex; align-items: center; gap: 10px; z-index: 2; }
+    .scroll-hint::after { content: ''; display: block; width: 1px; height: 48px; background: var(--gray); animation: scrollline 1.5s ease-in-out infinite; }
+    @keyframes scrollline { 0%,100%{opacity:0.3} 50%{opacity:1} }
+
+    .stage-scroll { height: 350vh; position: relative; }
+    .stage-sticky { position: sticky; top: 64px; height: calc(100vh - 64px); display: flex; align-items: center; justify-content: center; border-top: 1px solid var(--black); overflow: hidden; }
+    .stage-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .stage-caption { position: absolute; top: 48px; left: 48px; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray); z-index: 10; }
+
+    .explanation { padding: 120px 48px; display: grid; grid-template-columns: 220px 1fr 1fr; gap: 0; align-items: start; border-top: 1px solid var(--black); }
+    .exp-label { font-size: clamp(40px, 2vw, 72px); font-weight: 900; line-height: 0.9; writing-mode: vertical-rl; text-orientation: mixed; letter-spacing: 0.1em; align-self: stretch; }
+    .exp-col { padding: 0 40px; }
+    .exp-col p { font-size: 14px; line-height: 1.85; color: var(--black); margin-bottom: 1.6em; word-break: keep-all; }
+    .exp-col p:last-child { margin-bottom: 0; }
+
+    footer { background: #0a0a0a; color: #ffffff; padding: 56px 48px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 48px; }
+    .footer-col { display: flex; flex-direction: column; gap: 12px; }
+    .footer-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #888; margin-bottom: 4px; }
+    .footer-title { font-size: 15px; font-weight: 700; line-height: 1.5; color: #ffffff; }
+    .footer-sub { font-size: 12px; color: #888; letter-spacing: 0.04em; }
+    .footer-contact { font-size: 13px; color: #ccc; line-height: 2; }
+    .footer-copy { font-size: 11px; color: #555; margin-top: 8px; letter-spacing: 0.04em; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-left"><div class="nav-tagline">Same image<br>different brain<br>different answer</div></div>
+    <div class="nav-right">
+      <div class="nav-site-title">Optical Illusion</div>
+      <div class="nav-links">
+        <a href="index.html#types">←</a>
+        <a href="index.html#intro">Intro</a>
+        <a href="index.html#types">Types</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <img src="triangle.png" alt="kanizsa triangle" style="display:block; width:100%; height:auto; max-height:calc(100vh - 320px); object-fit:contain;">
+    <h1 class="hero-title">Kanizsa Triangle</h1>
+  </section>
+
+  <div class="stage-scroll" id="stage-tri">
+    <div class="stage-sticky">
+      <div class="stage-caption" id="cap-tri">세 개의 원이 있다</div>
+      <canvas class="stage-canvas" id="canvas-tri"></canvas>
+    </div>
+  </div>
+
+  <div class="stage-scroll" id="stage-sq">
+    <div class="stage-sticky">
+      <div class="stage-caption" id="cap-sq">네 개의 원이 있다</div>
+      <canvas class="stage-canvas" id="canvas-sq"></canvas>
+    </div>
+  </div>
+
+  <section class="explanation">
+    <div class="exp-label">카니자 삼각형</div>
+    <div class="exp-col">
+      <p>카니자 삼각형(Kanizsa Triangle)은 1955년 이탈리아의 심리학자 가에타노 카니자(Gaetano Kanizsa)가 발표한 착시 현상이다. 세 개의 팩맨 모양 도형을 삼각형의 꼭짓점 위치에 배치하면, 실제로 그려지지 않은 삼각형의 윤곽선이 또렷하게 보인다.</p>
+      <p>이렇게 실제로 존재하지 않지만 지각되는 윤곽선을 주관적 윤곽선(Subjective Contour) 또는 인지적 윤곽선이라고 한다. 뇌는 불완전한 정보를 받았을 때 빈 공간을 채워 완전한 형태를 만들어내려 한다. 이를 게슈탈트 심리학에서는 "폐합(Closure)"의 원리라고 부른다.</p>
+    </div>
+    <div class="exp-col">
+      <p>흥미로운 점은 카니자 삼각형의 내부가 바깥보다 약간 더 밝게 보인다는 것이다. 실제로는 동일한 흰색이지만, 뇌가 삼각형이 존재한다고 판단하면서 내부를 다르게 처리하기 때문이다. 존재하지 않는 도형이 실제 밝기 지각까지 바꿔버린다.</p>
+      <p>카니자 삼각형은 시각 피질의 작동 방식을 이해하는 데 중요한 단서를 제공했다. 뇌는 눈에서 들어오는 신호를 수동적으로 기록하는 것이 아니라, 능동적으로 세계를 구성한다. 없는 것을 만들어내는 것이 바로 그 증거다.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-col">
+      <div class="footer-label">Project</div>
+      <div class="footer-title">Optical Illusion<br>Archive</div>
+      <div class="footer-sub">웹 퍼블리싱 기말 프로젝트</div>
+      <div class="footer-sub">2025. 06.</div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-label">About</div>
+      <div class="footer-title" style="font-size:13px; font-weight:400; line-height:1.8; color:#aaa;">
+        눈은 보지 않는다. 예측한다.<br>
+        이 아카이브는 시각이 객관적 기록이 아니라<br>
+        능동적 해석이라는 것의 증거들을 모은다.
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-label">Contact</div>
+      <div class="footer-contact">
+        +82 10-7714-0155<br>
+        kcyhuman@seoultech.ac.kr<br>
+        Seoul, Republic of Korea
+      </div>
+      <div class="footer-copy">
+        24101008 김채윤<br>
+        © 2026 Optical Illusion Archive. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function clamp(v, a, b) { return Math.min(b, Math.max(a, v)); }
+    function invlerp(a, b, v) { return clamp((v - a) / (b - a), 0, 1); }
+    function lerp(a, b, t) { return a + (b - a) * t; }
+
+    const R = 100;
+
+    function drawPacman(ctx, cx, cy, r, gapDeg, dirDeg) {
+      const dirRad  = dirDeg * Math.PI / 180;
+      const halfRad = (gapDeg / 2) * Math.PI / 180;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      if (gapDeg < 0.5) {
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      } else {
+        ctx.arc(cx, cy, r, dirRad + halfRad, dirRad - halfRad + Math.PI * 2, false);
+      }
+      ctx.closePath();
+      ctx.fillStyle = '#0a0a0a';
+      ctx.fill();
+    }
+
+    function resizeCanvas(canvas) {
+      const parent = canvas.parentElement;
+      const w = parent.offsetWidth;
+      const h = parent.offsetHeight;
+      canvas.width  = w;
+      canvas.height = h;
+      return { w, h };
+    }
+
+    function getTriPositions(w, h) {
+      const cx = w / 2, cy = h / 2;
+      const d = 180;
+      return [
+        { cx: cx,                              cy: cy - d,       dir: 90  },
+        { cx: cx - d * Math.sin(Math.PI / 3), cy: cy + d * 0.5, dir: 330 },
+        { cx: cx + d * Math.sin(Math.PI / 3), cy: cy + d * 0.5, dir: 210 },
+      ];
+    }
+
+    function getSqPositions(w, h) {
+      const cx = w / 2, cy = h / 2;
+      const d = 190;
+      return [
+        { cx: cx - d, cy: cy - d, dir: 45  },
+        { cx: cx + d, cy: cy - d, dir: 135 },
+        { cx: cx - d, cy: cy + d, dir: 315 },
+        { cx: cx + d, cy: cy + d, dir: 225 },
+      ];
+    }
+
+    function drawTri(gap) {
+      const canvas = document.getElementById('canvas-tri');
+      const { w, h } = resizeCanvas(canvas);
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, w, h);
+      getTriPositions(w, h).forEach(p => drawPacman(ctx, p.cx, p.cy, R, gap, p.dir));
+    }
+
+    function drawSq(gap) {
+      const canvas = document.getElementById('canvas-sq');
+      const { w, h } = resizeCanvas(canvas);
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, w, h);
+      getSqPositions(w, h).forEach(p => drawPacman(ctx, p.cx, p.cy, R, gap, p.dir));
+    }
+
+    function getProgress(el) {
+      const rect = el.getBoundingClientRect();
+      const scrollable = el.offsetHeight - window.innerHeight;
+      const scrolled = -(rect.top - 64);
+      return clamp(scrolled / scrollable, 0, 1);
+    }
+
+    function onScroll() {
+      const triEl = document.getElementById('stage-tri');
+      const sqEl  = document.getElementById('stage-sq');
+      const triRect = triEl.getBoundingClientRect();
+      const sqRect  = sqEl.getBoundingClientRect();
+
+      if (triRect.bottom > 64 && triRect.top < window.innerHeight) {
+        const p = getProgress(triEl);
+        const gap = lerp(0, 60, invlerp(0, 0.6, p));
+        drawTri(gap);
+        const cap = document.getElementById('cap-tri');
+        if      (p < 0.05) cap.textContent = '세 개의 원이 있다';
+        else if (p < 0.6)  cap.textContent = '틈이 생기면?';
+        else               cap.textContent = '삼각형은 그려지지 않았다';
+      }
+
+      if (sqRect.bottom > 64 && sqRect.top < window.innerHeight) {
+        const p = getProgress(sqEl);
+        const gap = lerp(0, 90, invlerp(0, 0.6, p));
+        drawSq(gap);
+        const cap = document.getElementById('cap-sq');
+        if      (p < 0.05) cap.textContent = '네 개의 원이 있다';
+        else if (p < 0.6)  cap.textContent = '틈이 생기면?';
+        else               cap.textContent = '사각형도 그려지지 않았다';
+      }
+    }
+
+    window.addEventListener('resize', onScroll);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  </script>
+
+
+
+</body>
+</html>

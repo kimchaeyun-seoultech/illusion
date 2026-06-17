@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+	<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Müller-Lyer — Optical Illusion</title>
+  <style>
+    @font-face {
+      font-family: 'Paperlogy';
+      src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-4Regular.woff2') format('woff2');
+      font-weight: 400; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Paperlogy';
+      src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-7Bold.woff2') format('woff2');
+      font-weight: 700; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Paperlogy';
+      src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-9Black.woff2') format('woff2');
+      font-weight: 900; font-display: swap;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --black: #0a0a0a; --white: #ffffff; --gray: #888; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Paperlogy', sans-serif;
+      background: var(--white);
+      color: var(--black);
+      min-width: 900px;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100; display: flex; align-items: stretch;
+      height: 64px; background: var(--black);
+    }
+    .nav-left { display: flex; flex-direction: column; justify-content: center; padding: 10px 24px; flex: 1; }
+    .nav-tagline { font-size: 12px; font-weight: 700; color: var(--white); line-height: 1.5; }
+    .nav-right { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; padding-top: 10px; }
+    .nav-site-title { font-size: 13px; font-weight: 700; color: var(--white); padding: 0 24px; }
+    .nav-links { display: flex; height: 32px; }
+    .nav-links a {
+      display: flex; align-items: center; padding: 0 28px;
+      font-size: 13px; font-weight: 700;
+      color: var(--black); background: var(--white);
+      text-decoration: none; border-left: 1px solid #ccc;
+    }
+    .nav-links a:first-child { border-left: none; }
+    .nav-links a:hover { background: #e8e8e8; }
+
+    /* HERO */
+    .hero {
+      margin-top: 64px;
+      height: calc(100vh - 64px);
+      display: flex; flex-direction: column;
+      justify-content: flex-end;
+      padding: 48px;
+      position: relative;
+    }
+    .hero-lines {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 140px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 64px;
+      pointer-events: none;
+    }
+    .hero-lines svg {
+      width: 70%;
+      max-width: 700px;
+      overflow: visible;
+    }
+
+    .hero-title {
+      font-size: clamp(48px, 7vw, 96px);
+      font-weight: 900; line-height: 1.0;
+      letter-spacing: -0.03em;
+    }
+
+    .scroll-hint {
+      position: absolute; bottom: 48px; right: 48px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.1em; color: var(--gray);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .scroll-hint::after {
+      content: ''; display: block; width: 1px; height: 48px;
+      background: var(--gray);
+      animation: scrollline 1.5s ease-in-out infinite;
+    }
+    @keyframes scrollline { 0%,100%{opacity:0.3} 50%{opacity:1} }
+
+    /* STAGE */
+    .stage-scroll { height: 400vh; position: relative; }
+    .stage-sticky {
+      position: sticky; top: 64px;
+      height: calc(100vh - 64px);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 48px;
+      border-top: 1px solid var(--black);
+    }
+    .line-svg-main {
+      width: 80%; max-width: 800px;
+      height: auto; overflow: visible;
+    }
+    .stage-status {
+      position: absolute; bottom: 48px; right: 48px; text-align: right;
+    }
+    .status-label {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.1em; color: var(--gray);
+      text-transform: uppercase; margin-bottom: 4px;
+    }
+    .status-value {
+      font-size: 56px; font-weight: 900;
+      line-height: 1; letter-spacing: -0.03em;
+    }
+
+    
+    .explanation {
+      border-top: 1px solid var(--black);
+      padding: 120px 48px;
+      display: grid;
+      grid-template-columns: 220px 1fr 1fr;
+      gap: 0;
+      align-items: start;
+    }
+    .exp-label {
+      font-size: clamp(40px, 2vw, 72px);
+      font-weight: 900;
+      line-height: 0.9;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      letter-spacing: 0.1em;
+      align-self: stretch;
+    }
+    .exp-col {
+      padding: 0 40px;
+    }
+    .exp-col p {
+      font-size: 14px; line-height: 1.85;
+      color: var(--black); margin-bottom: 1.6em;
+      word-break: keep-all;
+    }
+    .exp-col p:last-child { margin-bottom: 0; }
+
+    /* FOOTER */
+    footer {
+      background: #0a0a0a;
+      color: #ffffff;
+      padding: 56px 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 48px;
+    }
+    .footer-col { display: flex; flex-direction: column; gap: 12px; }
+    .footer-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #888; margin-bottom: 4px; }
+    .footer-title { font-size: 15px; font-weight: 700; line-height: 1.5; color: #ffffff; }
+    .footer-sub { font-size: 12px; color: #888; letter-spacing: 0.04em; }
+    .footer-contact { font-size: 13px; color: #ccc; line-height: 2; }
+    .footer-copy { font-size: 11px; color: #555; margin-top: 8px; letter-spacing: 0.04em; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-left">
+      <div class="nav-tagline">Same image<br>different brain<br>different answer</div>
+    </div>
+    <div class="nav-right">
+      <div class="nav-site-title">Optical Illusion</div>
+      <div class="nav-links">
+        <a href="index.html#types">←</a>
+        <a href="index.html#intro">Intro</a>
+        <a href="index.html#types">Types</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-lines">
+      <svg viewBox="0 0 700 100" overflow="visible">
+        <line x1="60" y1="50" x2="640" y2="50" stroke="#0a0a0a" stroke-width="5" stroke-linecap="round"></line>
+        <line x1="60" y1="50" x2="60" y2="50" stroke="#0a0a0a" stroke-width="5" stroke-linecap="round" id="h-tl1"></line>
+        <line id="h-tl1" x1="60" y1="50" x2="0" y2="10" stroke="#0a0a0a" stroke-width="5" stroke-linecap="round"></line>
+        <line id="h-tl2" x1="60" y1="50" x2="0" y2="90" stroke="#0a0a0a" stroke-width="5" stroke-linecap="round"></line>
+        <line id="h-tr1" x1="640" y1="50" x2="700" y2="10" stroke="#0a0a0a" stroke-width="5" stroke-linecap="round"></line>
+        <line id="h-tr2" x1="640" y1="50" x2="700" y2="90" stroke="#0a0a0a" stroke-width="5" stroke-linecap="round"></line>
+      </svg>
+      <svg viewBox="0 0 700 100" overflow="visible">
+        <line x1="60" y1="50" x2="640" y2="50" stroke="#0a0a0a" stroke-width="5" stroke-linecap="round"></line>
+        <line x1="60" y1="50" x2="120" y2="10" stroke="#0a0a0a" stroke-width="5" stroke-linecap="round"></line>
+        <line x1="60" y1="50" x2="120" y2="90" stroke="#0a0a0a" stroke-width="5" stroke-linecap="round"></line>
+        <line x1="640" y1="50" x2="580" y2="10" stroke="#0a0a0a" stroke-width="5" stroke-linecap="round"></line>
+        <line x1="640" y1="50" x2="580" y2="90" stroke="#0a0a0a" stroke-width="5" stroke-linecap="round"></line>
+      </svg>
+    </div>
+
+    <h1 class="hero-title">Müller-Lyer</h1>
+  </section>
+
+  <!-- STAGE -->
+  <div class="stage-scroll" id="stage-scroll">
+    <div class="stage-sticky">
+      <svg class="line-svg-main" viewBox="0 0 800 120" overflow="visible">
+        <line x1="80" y1="60" x2="720" y2="60" stroke="#0a0a0a" stroke-width="6" stroke-linecap="round"></line>
+        <line id="l1" x1="80" y1="60" x2="19.37822173508929" y2="25.000000000000007" stroke="#0a0a0a" stroke-width="6" stroke-linecap="round"></line>
+        <line id="l2" x1="80" y1="60" x2="19.37822173508929" y2="95" stroke="#0a0a0a" stroke-width="6" stroke-linecap="round"></line>
+        <line id="r1" x1="720" y1="60" x2="780.6217782649107" y2="25.000000000000007" stroke="#0a0a0a" stroke-width="6" stroke-linecap="round"></line>
+        <line id="r2" x1="720" y1="60" x2="780.6217782649107" y2="95" stroke="#0a0a0a" stroke-width="6" stroke-linecap="round"></line>
+      </svg>
+      <div class="stage-status">
+        <div class="status-label">Arrow angle</div>
+        <div class="status-value" id="angle-display">0%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXPLANATION -->
+  <section class="explanation">
+    <div class="exp-label">뮐러-라이어 착시</div>
+
+    <div class="exp-col">
+      <p>뮐러-라이어 착시는 심리학과 지각 연구에서 가장 유명한 시각적 착시 현상 중 하나다. 1889년 독일의 사회학자이자 심리학자인 프란츠 카를 뮐러-라이어(Franz Carl Müller-Lyer)가 처음 발표했으며, 100년이 넘는 시간 동안 인간의 지각과 인지를 연구하는 핵심 사례로 활용되어 왔다.</p>
+
+      <p>현상 자체는 매우 단순하다. 두 개의 선분이 있고, 한쪽은 양 끝에 화살표가 바깥쪽을 향하고, 다른 쪽은 안쪽을 향한다. 두 선분의 실제 길이는 완전히 동일하지만, 거의 모든 사람의 눈에는 바깥쪽 화살표가 붙은 선이 훨씬 더 길어 보인다. 단순히 "착각인 줄 알면서도" 두 선이 같아 보이지 않는다는 점에서, 이 착시는 인간의 인식이 얼마나 자동적이고 수정하기 어려운지를 직접적으로 보여준다.</p>
+    </div>
+
+    <div class="exp-col">
+      <p>뮐러-라이어 착시의 또 다른 철학적 흥미로움은 인식론적 아이러니에 있다. 두 선의 길이가 같다는 것을 자로 직접 재서 확인해도, 여전히 한쪽이 더 길어 보인다. 착시를 유발하는 메커니즘이 의식적 판단보다 훨씬 낮은 수준에서 작동하기 때문이다.</p>
+
+      <p>뮐러-라이어 착시는 단지 "눈이 속는다"는 신기한 현상이 아니다. 그것은 우리의 지각이 수동적인 카메라가 아니라, 과거의 경험·문화·학습을 바탕으로 세상을 능동적으로 해석하는 장치임을 보여주는 강력한 증거다. 우리가 "본다"고 믿는 것은 사실 뇌가 끊임없이 구성해내는 하나의 가설에 가깝다. 그리고 그 가설은, 때로는 현실보다 훨씬 완고하다.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-col">
+      <div class="footer-label">Project</div>
+      <div class="footer-title">Optical Illusion<br>Archive</div>
+      <div class="footer-sub">웹 퍼블리싱 기말 프로젝트</div>
+      <div class="footer-sub">2025. 06.</div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-label">About</div>
+      <div class="footer-title" style="font-size:13px; font-weight:400; line-height:1.8; color:#aaa;">
+        눈은 보지 않는다. 예측한다.<br>
+        이 아카이브는 시각이 객관적 기록이 아니라<br>
+        능동적 해석이라는 것의 증거들을 모은다.
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-label">Contact</div>
+      <div class="footer-contact">
+        +82 10-7714-0155<br>
+        kcyhuman@seoultech.ac.kr<br>
+        Seoul, Republic of Korea
+      </div>
+      <div class="footer-copy">
+        24101008 김채윤<br>
+        © 2026 Optical Illusion Archive. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const ARM = 70; 
+    const LX = 80, RX = 720, CY = 60;
+
+    function setLine(id, x1, y1, x2, y2) {
+      const el = document.getElementById(id);
+      el.setAttribute('x1', x1); el.setAttribute('y1', y1);
+      el.setAttribute('x2', x2); el.setAttribute('y2', y2);
+    }
+
+    function updateArrows(progress) {
+      const angle = 30; 
+      const rad = (angle * Math.PI) / 180;
+      const dx = Math.cos(rad) * ARM;
+      const dy = Math.sin(rad) * ARM;
+
+ 
+      const t = progress * 2 - 1; 
+
+      const lDx = dx * t;
+      setLine('l1', LX, CY, LX + lDx, CY - dy);
+      setLine('l2', LX, CY, LX + lDx, CY + dy);
+
+      const rDx = dx * -t;
+      setLine('r1', RX, CY, RX + rDx, CY - dy);
+      setLine('r2', RX, CY, RX + rDx, CY + dy);
+
+      const pct = Math.round(progress * 100);
+      document.getElementById('angle-display').textContent = pct + '%';
+    }
+
+    function onScroll() {
+      const el = document.getElementById('stage-scroll');
+      const rect = el.getBoundingClientRect();
+      const scrollableHeight = el.offsetHeight - window.innerHeight;
+      const scrolled = -(rect.top - 64);
+      const progress = Math.min(1, Math.max(0, scrolled / scrollableHeight));
+      updateArrows(progress);
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    updateArrows(0);
+  </script>
+</body>
+</html>

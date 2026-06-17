@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Optical Illusion</title>
+  <style>
+    @font-face {
+      font-family: 'Paperlogy';
+      src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-4Regular.woff2') format('woff2'),
+           url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-4Regular.woff') format('woff');
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Paperlogy';
+      src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-6SemiBold.woff2') format('woff2'),
+           url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-6SemiBold.woff') format('woff');
+      font-weight: 600;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Paperlogy';
+      src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-7Bold.woff2') format('woff2'),
+           url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-7Bold.woff') format('woff');
+      font-weight: 700;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Paperlogy';
+      src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-9Black.woff2') format('woff2'),
+           url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-9Black.woff') format('woff');
+      font-weight: 900;
+      font-display: swap;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0a0a0a;
+      --white: #ffffff;
+      --gray: #888;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--white);
+      color: var(--black);
+      font-family: 'Paperlogy', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: stretch;
+      height: 64px;
+      background: var(--black);
+    }
+
+    .nav-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 10px 24px;
+      flex: 1;
+    }
+
+    .nav-tagline {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.5;
+      letter-spacing: 0.01em;
+    }
+
+    .nav-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding-top: 10px;
+    }
+
+    .nav-site-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: 0.02em;
+      padding: 0 24px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: stretch;
+      height: 32px;
+    }
+
+    .nav-links a {
+      display: flex;
+      align-items: center;
+      padding: 0 32px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--black);
+      background: var(--white);
+      text-decoration: none;
+      border-left: 1px solid #ccc;
+      letter-spacing: 0.01em;
+      transition: background 0.15s;
+    }
+
+    .nav-links a:first-child { border-left: none; }
+    .nav-links a:hover { background: #e8e8e8; }
+
+    /* ── HERO ── */
+    .hero {
+      margin-top: 64px;
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 64px);
+      overflow: hidden;
+    }
+
+    .hero-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .hero-canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .hero-title {
+      position: absolute;
+      bottom: 32px;
+      left: 0; right: 0;
+      text-align: left;
+      font-family: 'Paperlogy', sans-serif;
+      font-size: clamp(48px, 8.5vw, 120px);
+      font-weight: 900;
+      color: var(--white);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      text-shadow: 3px 3px 0 rgba(0,0,0,0.3);
+      z-index: 2;
+      padding: 0 24px;
+      width: 100%;
+      word-break: keep-all;
+    }
+
+    .intro {
+      display: grid;
+      grid-template-columns: 200px 1fr 1fr;
+      gap: 0;
+      padding: 120px 40px 120px 40px;
+      align-items: start;
+    }
+
+    .intro-label {
+      font-family: 'Paperlogy', sans-serif;
+      font-size: clamp(64px, 10vw, 120px);
+      font-weight: 900;
+      line-height: 0.9;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      letter-spacing: 0.15em;
+      padding-right: 20px;
+      align-self: stretch;
+    }
+
+    .intro-col {
+      padding: 0 32px;
+    }
+
+    .intro-col p {
+      font-size: 14px;
+      line-height: 1.8;
+      color: #111;
+      margin-bottom: 1.4em;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+    }
+
+    .intro-col p:last-child { margin-bottom: 0; }
+
+    .intro-col strong {
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    /* ── TYPES SECTION ── */
+    .types {
+      padding: 120px 40px;
+    }
+
+    .types-header {
+      display: flex;
+      align-items: baseline;
+      gap: 24px;
+      margin-bottom: 48px;
+      border-bottom: 2px solid var(--black);
+      padding-bottom: 16px;
+    }
+
+    .types-header h2 {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .types-header span {
+      font-size: 11px;
+      color: var(--gray);
+      letter-spacing: 0.08em;
+    }
+
+    .types-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+    }
+
+    .type-card {
+      display: block;
+      padding: 32px 28px;
+      border-right: 1px solid var(--black);
+      border-bottom: 1px solid var(--black);
+      cursor: pointer;
+      transition: background 0.15s;
+      text-decoration: none;
+      color: var(--black);
+    }
+
+    .type-card:nth-child(3n) { border-right: none; }
+    .type-card:nth-last-child(-n+3) { border-bottom: none; }
+
+    .type-card:hover { background: var(--black); color: var(--white); }
+    .type-card:hover .type-year { color: #aaa; }
+    .type-card:hover .type-desc { color: #ccc; }
+
+    .type-number {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      word-break: keep-all;
+      color: var(--gray);
+      margin-bottom: 16px;
+    }
+
+    .type-card:hover .type-number { color: #888; }
+
+    .type-name {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      letter-spacing: -0.01em;
+    }
+
+    .type-desc {
+      font-size: 13px;
+      line-height: 1.65;
+      color: #444; word-break: keep-all;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #0a0a0a;
+      color: #ffffff;
+      padding: 56px 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 48px;
+    }
+    .footer-col { display: flex; flex-direction: column; gap: 12px; }
+    .footer-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #888; margin-bottom: 4px; }
+    .footer-title { font-size: 15px; font-weight: 700; line-height: 1.5; color: #ffffff; }
+    .footer-sub { font-size: 12px; color: #888; letter-spacing: 0.04em; }
+    .footer-contact { font-size: 13px; color: #ccc; line-height: 2; }
+    .footer-copy { font-size: 11px; color: #555; margin-top: 8px; letter-spacing: 0.04em; }
+  </style>
+  <body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-left">
+      <div class="nav-tagline">Same image<br>different brain<br>different answer</div>
+    </div>
+    <div class="nav-right">
+      <div class="nav-site-title">Optical Illusion</div>
+      <div class="nav-links">
+        <a href="#intro">Intro</a>
+        <a href="#types">Types</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <img class="hero-canvas" src="illusion.gif" alt="optical illusion">
+    <h1 class="hero-title">
+      당신의 눈은 처음부터<br>전부를 보지 못한다.
+    </h1>
+  </section>
+
+  <!-- INTRO -->
+  <section class="intro" id="intro">
+    <div class="intro-label">착시</div>
+
+    <div class="intro-col">
+      <p>눈은 보지 않는다. 예측한다.<br>
+      우리는 눈으로 세상을 본다고 생각한다. 하지만 실제로 시각을 만드는 건 눈이 아니라 뇌다. 망막에 맺히는 상은 평면적이고, 뒤집혀 있고, 주변부로 갈수록 흐릿하다. 색을 정확하게 구분하는 세포는 중심부에만 몰려 있다. 시신경이 망막과 연결되는 지점에는 아무것도 보이지 않는 맹점이 있다. 눈이 전달하는 정보는 생각보다 훨씬 불완전하다.</p>
+
+      <p>뇌는 이 불완전한 신호를 받아서 세계를 재구성한다. 빈 곳을 채우고, 경계를 만들고, 움직임을 감지하고, 거리를 계산한다. 이 과정은 의식 아래에서, 눈 깜짝할 사이에 일어난다. 우리가 무언가를 "봤다"고 느끼는 순간, 뇌는 이미 해석을 끝낸 뒤다.</p>
+    </div>
+
+    <div class="intro-col">
+      <p>하지만 가끔 틀린다.<br>
+      착시는 그 틀림의 순간이다. 뇌가 패턴을 잘못 읽거나, 맥락에 속거나, 존재하지 않는 것을 만들어낸 흔적. 착시가 흥미로운 이유는 단순히 신기해서가 아니다. 착시인 줄 알고 봐도 여전히 속는다는 것 — 지식이 지각을 바꾸지 못한다는 것. 이성이 감각을 이기지 못하는 그 순간이, 우리가 얼마나 구성된 방식으로 세상을 보는지를 드러낸다.</p>
+
+      <p>각각의 착시는 하나의 증거다. 시각이 객관적 기록이 아니라 능동적 해석이라는 것의. 이 아카이브는 그 증거들을 모은다. 발견된 순서대로, 이름과 함께, 지금도 작동하는 채로.</p>
+    </div>
+  </section>
+
+  <!-- TYPES -->
+  <section class="types" id="types">
+    <div class="types-header">
+      <h2>Types</h2>
+      
+    </div>
+
+    <div class="types-grid">
+
+      <a class="type-card" href="muller-lyer.html">
+        <div class="type-name">Müller-Lyer</div>
+        <div class="type-desc">두 선의 길이는 같다. 화살표 방향이 바뀌면 뇌가 다르게 읽는다. 자로 재도 속는다.</div>
+      </a>
+
+      <a class="type-card" href="pareidolia.html">
+        <div class="type-name">Pareidolia</div>
+        <div class="type-desc">구름에서 얼굴을, 나무에서 형체를 본다. 패턴이 없는 곳에서 뇌가 패턴을 만들어낸다.</div>
+      </a>
+
+      <a class="type-card" href="ponzo.html">
+        <div class="type-name">Ponzo</div>
+        <div class="type-desc">평행선 사이에 놓인 두 선. 위쪽이 더 길어 보인다. 원근감이 크기 판단을 덮어쓴다.</div>
+      </a>
+
+      <a class="type-card" href="ebbinghaus.html">
+        <div class="type-name">Ebbinghaus</div>
+        <div class="type-desc">주변 원의 크기에 따라 가운데 원이 달라 보인다. 맥락이 크기 판단을 바꾼다.</div>
+      </a>
+
+      <a class="type-card" href="simultaneouscontrast.html">
+        <div class="type-name">Simultaneous Contrast</div>
+        <div class="type-desc">같은 색이 배경에 따라 다르게 보인다. 눈은 색을 절대값이 아닌 관계로 읽는다.</div>
+      </a>
+
+      <a class="type-card" href="motionillusion.html">
+        <div class="type-name">Motion Illusion</div>
+        <div class="type-desc">정지해 있다. 그러나 움직인다.</div>
+      </a>
+
+      <a class="type-card" href="hering.html">
+        <div class="type-name">Hering Illusion</div>
+        <div class="type-desc">평행선은 곧다. 방사선이 놓이는 순간, 휘어 보인다.</div>
+      </a>
+
+      <a class="type-card" href="rubin.html">
+        <div class="type-name">Rubin's Vase</div>
+        <div class="type-desc">꽃병으로도, 두 얼굴로도 보인다. 같은 이미지가 두 가지 해석을 동시에 허용한다.</div>
+      </a>
+
+      <a class="type-card" href="kanizsa.html">
+        <div class="type-name">Kanizsa Triangle</div>
+        <div class="type-desc">삼각형은 그려지지 않았다. 그런데 보인다.</div>
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-col">
+      <div class="footer-label">Project</div>
+      <div class="footer-title">Optical Illusion<br>Archive</div>
+      <div class="footer-sub">웹 퍼블리싱 기말 프로젝트</div>
+      <div class="footer-sub">2025. 06.</div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-label">About</div>
+      <div class="footer-title" style="font-size:13px; font-weight:400; line-height:1.8; color:#aaa;">
+        눈은 보지 않는다. 예측한다.<br>
+        이 아카이브는 시각이 객관적 기록이 아니라<br>
+        능동적 해석이라는 것의 증거들을 모은다.
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-label">Contact</div>
+      <div class="footer-contact">
+        +82 10-7714-0155<br>
+        kcyhuman@seoultech.ac.kr<br>
+        Seoul, Republic of Korea
+      </div>
+      <div class="footer-copy">
+        24101008 김채윤<br>
+        © 2026 Optical Illusion Archive. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+
+
+</body>
+</head>
+
+</html>

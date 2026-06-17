@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+	<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ponzo — Optical Illusion</title>
+  <style>
+    @font-face { font-family: 'Paperlogy'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-4Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+    @font-face { font-family: 'Paperlogy'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-7Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+    @font-face { font-family: 'Paperlogy'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-9Black.woff2') format('woff2'); font-weight: 900; font-display: swap; }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --black: #0a0a0a; --white: #ffffff; --gray: #888; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Paperlogy', sans-serif; background: var(--white); color: var(--black); min-width: 900px; overflow-x: hidden; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: stretch; height: 64px; background: var(--black); }
+    .nav-left { display: flex; flex-direction: column; justify-content: center; padding: 10px 24px; flex: 1; }
+    .nav-tagline { font-size: 12px; font-weight: 700; color: var(--white); line-height: 1.5; }
+    .nav-right { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; padding-top: 10px; }
+    .nav-site-title { font-size: 13px; font-weight: 700; color: var(--white); padding: 0 24px; }
+    .nav-links { display: flex; height: 32px; }
+    .nav-links a { display: flex; align-items: center; padding: 0 28px; font-size: 13px; font-weight: 700; color: var(--black); background: var(--white); text-decoration: none; border-left: 1px solid #ccc; }
+    .nav-links a:first-child { border-left: none; }
+    .nav-links a:hover { background: #e8e8e8; }
+
+    .hero { margin-top: 64px; height: calc(100vh - 64px); display: flex; flex-direction: column; justify-content: space-between; padding: 48px; position: relative; overflow: hidden; }
+    .hero-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .hero-title { font-size: clamp(48px, 7vw, 96px); font-weight: 900; line-height: 1.0; letter-spacing: -0.03em; position: relative; z-index: 2; }
+    .scroll-hint { position: absolute; bottom: 48px; right: 48px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--gray); display: flex; align-items: center; gap: 10px; z-index: 2; }
+    .scroll-hint::after { content: ''; display: block; width: 1px; height: 48px; background: var(--gray); animation: scrollline 1.5s ease-in-out infinite; }
+    @keyframes scrollline { 0%,100%{opacity:0.3} 50%{opacity:1} }
+
+    .stage-scroll { height: 400vh; position: relative; }
+    .stage-sticky { position: sticky; top: 64px; height: calc(100vh - 64px); display: flex; align-items: center; justify-content: center; border-top: 1px solid var(--black); }
+    .stage-svg { width: 100%; height: 100%; position: absolute; inset: 0; }
+    .stage-caption { position: absolute; top: 48px; left: 48px; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray); z-index: 10; }
+    .stage-status { position: absolute; bottom: 48px; right: 48px; text-align: right; z-index: 10; }
+    .status-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--gray); text-transform: uppercase; margin-bottom: 4px; }
+    .status-value { font-size: 56px; font-weight: 900; line-height: 1; letter-spacing: -0.03em; }
+
+    .explanation { padding: 120px 48px; display: grid; grid-template-columns: 220px 1fr 1fr; gap: 0; align-items: start; border-top: 1px solid var(--black); }
+    .exp-label { font-size: clamp(40px, 2vw, 72px); font-weight: 900; line-height: 0.9; writing-mode: vertical-rl; text-orientation: mixed; letter-spacing: 0.1em; align-self: stretch; }
+    .exp-col { padding: 0 40px; }
+    .exp-col p { font-size: 14px; line-height: 1.85; color: var(--black); margin-bottom: 1.6em; word-break: keep-all; }
+    .exp-col p:last-child { margin-bottom: 0; }
+   footer {
+      background: #0a0a0a;
+      color: #ffffff;
+      padding: 56px 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 48px;
+    }
+    .footer-col { display: flex; flex-direction: column; gap: 12px; }
+    .footer-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #888; margin-bottom: 4px; }
+    .footer-title { font-size: 15px; font-weight: 700; line-height: 1.5; color: #ffffff; }
+    .footer-sub { font-size: 12px; color: #888; letter-spacing: 0.04em; }
+    .footer-contact { font-size: 13px; color: #ccc; line-height: 2; }
+    .footer-copy { font-size: 11px; color: #555; margin-top: 8px; letter-spacing: 0.04em; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-left"><div class="nav-tagline">Same image<br>different brain<br>different answer</div></div>
+    <div class="nav-right">
+      <div class="nav-site-title">Optical Illusion</div>
+      <div class="nav-links">
+        <a href="index.html#types">←</a>
+        <a href="index.html#intro">Intro</a>
+        <a href="index.html#types">Types</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <img src="rail.png" alt="railway" style="display:block; width:100%; height:auto; max-height:calc(100vh - 220px); object-fit:contain; opacity:0.85;">
+    <h1 class="hero-title" style="padding-top:24px;">Ponzo</h1>
+  </section>
+
+  <div class="stage-scroll" id="stage-scroll">
+    <div class="stage-sticky">
+      <div class="stage-caption" id="stage-caption">위쪽 선이 더 길어 보인다</div>
+
+      <svg class="stage-svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid meet">
+
+        <g id="rail-group" opacity="1">
+          <line x1="600" y1="100" x2="60" y2="820" stroke="#0a0a0a" stroke-width="2"></line>
+          <line x1="600" y1="100" x2="1140" y2="820" stroke="#0a0a0a" stroke-width="2"></line>
+          <line x1="585" y1="135" x2="615" y2="135" stroke="#0a0a0a" stroke-width="2.5" opacity="0.2"></line>
+          <line x1="569" y1="175" x2="631" y2="175" stroke="#0a0a0a" stroke-width="2.5" opacity="0.2"></line>
+          <line x1="547" y1="225" x2="653" y2="225" stroke="#0a0a0a" stroke-width="2.5" opacity="0.2"></line>
+          <line x1="517" y1="290" x2="683" y2="290" stroke="#0a0a0a" stroke-width="2.5" opacity="0.2"></line>
+          <line x1="476" y1="375" x2="724" y2="375" stroke="#0a0a0a" stroke-width="2.5" opacity="0.2"></line>
+          <line x1="422" y1="485" x2="778" y2="485" stroke="#0a0a0a" stroke-width="2.5" opacity="0.2"></line>
+          <line x1="348" y1="620" x2="852" y2="620" stroke="#0a0a0a" stroke-width="2.5" opacity="0.2"></line>
+        </g>
+
+        <line id="line-top" x1="450" y1="290" x2="750" y2="290" stroke="#0a0a0a" stroke-width="7" stroke-linecap="round"></line>
+        <line x1="450" y1="485" x2="750" y2="485" stroke="#0a0a0a" stroke-width="7" stroke-linecap="round"></line>
+
+        <g id="equal-group" opacity="0">
+          <text x="600" y="390" text-anchor="middle" font-family="Paperlogy, sans-serif" font-size="16" font-weight="900" fill="#aaa" letter-spacing="0.2em">SAME LENGTH</text>
+          <text x="770" y="435" text-anchor="start" font-family="Paperlogy, sans-serif" font-size="13" font-weight="700" fill="#aaa">300px</text>
+          <text x="770" y="490" text-anchor="start" font-family="Paperlogy, sans-serif" font-size="13" font-weight="700" fill="#aaa">300px</text>
+        </g>
+
+      </svg>
+
+      <div class="stage-status">
+        <div class="status-label">Progress</div>
+        <div class="status-value" id="status-value">0%</div>
+      </div>
+    </div>
+  </div>
+
+  <section class="explanation">
+    <div class="exp-label">폰조 착시</div>
+    <div class="exp-col">
+      <p>폰조 착시(Ponzo Illusion)는 1911년 이탈리아의 심리학자 마리오 폰조(Mario Ponzo)가 처음 기록한 착시 현상이다. 수렴하는 두 선 사이에 실제로 같은 길이의 가로선 두 개를 놓으면, 소실점에 가까운 위쪽 선이 더 길어 보인다.</p>
+      <p>원인은 뇌의 원근감 해석 방식에 있다. 수렴하는 두 선은 멀리 뻗어 나가는 길이나 철로처럼 읽힌다. 뇌는 같은 크기의 물체라도 멀리 있으면 실제로 더 크다고 자동으로 보정하는데, 이 보정 메커니즘이 평면 이미지에도 그대로 작동하면서 착시가 발생한다.</p>
+    </div>
+    <div class="exp-col">
+      <p>이것을 "크기 항상성(Size Constancy)"이라고 한다. 뇌는 망막에 맺히는 상의 크기가 아니라, 거리를 고려한 실제 크기를 추정하려 한다. 3차원 세계에서 생존하기 위해 발달한 이 능력이 2차원 평면에서 오작동을 일으키는 것이다.</p>
+      <p>폰조 착시는 일상에서 끊임없이 작동한다. 지평선 근처의 달이 하늘 높이 뜬 달보다 커 보이는 것, 고속도로에서 멀리 있는 차가 실제보다 작아 보이는 것 모두 같은 원리다. 우리가 보는 세계는 망막의 기록이 아니라, 뇌가 재구성한 3차원 모델이다.</p>
+    </div>
+  </section>
+
+ <footer>
+    <div class="footer-col">
+      <div class="footer-label">Project</div>
+      <div class="footer-title">Optical Illusion<br>Archive</div>
+      <div class="footer-sub">웹 퍼블리싱 기말 프로젝트</div>
+      <div class="footer-sub">2025. 06.</div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-label">About</div>
+      <div class="footer-title" style="font-size:13px; font-weight:400; line-height:1.8; color:#aaa;">
+        눈은 보지 않는다. 예측한다.<br>
+        이 아카이브는 시각이 객관적 기록이 아니라<br>
+        능동적 해석이라는 것의 증거들을 모은다.
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-label">Contact</div>
+      <div class="footer-contact">
+        +82 10-7714-0155<br>
+        kcyhuman@seoultech.ac.kr<br>
+        Seoul, Republic of Korea
+      </div>
+      <div class="footer-copy">
+        24101008 김채윤<br>
+        © 2026 Optical Illusion Archive. All rights reserved.
+      </div>
+    </div>
+  </footer>
+  <script>
+    function clamp(v, a, b) { return Math.min(b, Math.max(a, v)); }
+    function invlerp(a, b, v) { return clamp((v - a) / (b - a), 0, 1); }
+    function lerp(a, b, t) { return a + (b - a) * t; }
+
+    function update(progress) {
+      const p1 = invlerp(0,    0.4,  progress);
+      const p2 = invlerp(0.4,  0.8,  progress);
+      const p3 = invlerp(0.8,  1.0,  progress);
+
+      document.getElementById('rail-group').setAttribute('opacity', 1 - p1);
+
+      const y = lerp(290, 430, p2);
+      const lt = document.getElementById('line-top');
+      lt.setAttribute('y1', y);
+      lt.setAttribute('y2', y);
+
+      document.getElementById('equal-group').setAttribute('opacity', p3);
+
+      const cap = document.getElementById('stage-caption');
+      if (progress < 0.05)      cap.textContent = '위쪽 선이 더 길어 보인다';
+      else if (progress < 0.4)  cap.textContent = '수렴선이 사라지면?';
+      else if (progress < 0.8)  cap.textContent = '두 선을 나란히 놓으면?';
+      else                      cap.textContent = '두 선의 길이는 같다';
+
+      document.getElementById('status-value').textContent = Math.round(progress * 100) + '%';
+    }
+
+    function onScroll() {
+      const el = document.getElementById('stage-scroll');
+      const rect = el.getBoundingClientRect();
+      const scrollable = el.offsetHeight - window.innerHeight;
+      const scrolled = -(rect.top - 64);
+      update(clamp(scrolled / scrollable, 0, 1));
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    update(0);
+  </script>
+</body>
+</html>

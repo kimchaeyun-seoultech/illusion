@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ebbinghaus — Optical Illusion</title>
+  <style>
+    @font-face { font-family: 'Paperlogy'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-4Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+    @font-face { font-family: 'Paperlogy'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-7Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+    @font-face { font-family: 'Paperlogy'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-9Black.woff2') format('woff2'); font-weight: 900; font-display: swap; }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --black: #0a0a0a; --white: #ffffff; --gray: #888; --red: #e03030; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Paperlogy', sans-serif; background: var(--white); color: var(--black); min-width: 900px; overflow-x: hidden; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: stretch; height: 64px; background: var(--black); }
+    .nav-left { display: flex; flex-direction: column; justify-content: center; padding: 10px 24px; flex: 1; }
+    .nav-tagline { font-size: 12px; font-weight: 700; color: var(--white); line-height: 1.5; }
+    .nav-right { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; padding-top: 10px; }
+    .nav-site-title { font-size: 13px; font-weight: 700; color: var(--white); padding: 0 24px; }
+    .nav-links { display: flex; height: 32px; }
+    .nav-links a { display: flex; align-items: center; padding: 0 28px; font-size: 13px; font-weight: 700; color: var(--black); background: var(--white); text-decoration: none; border-left: 1px solid #ccc; }
+    .nav-links a:first-child { border-left: none; }
+    .nav-links a:hover { background: #e8e8e8; }
+
+    .hero { margin-top: 64px; height: calc(100vh - 64px); display: flex; flex-direction: column; justify-content: space-between; padding: 48px; position: relative; overflow: hidden; border-bottom: 1px solid var(--black); }
+    .hero-title { font-size: clamp(48px, 7vw, 96px); font-weight: 900; line-height: 1.0; letter-spacing: -0.03em; position: relative; z-index: 2; }
+    .hero-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .scroll-hint { position: absolute; bottom: 48px; right: 48px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--gray); display: flex; align-items: center; gap: 10px; z-index: 2; }
+    .scroll-hint::after { content: ''; display: block; width: 1px; height: 48px; background: var(--gray); animation: scrollline 1.5s ease-in-out infinite; }
+    @keyframes scrollline { 0%,100%{opacity:0.3} 50%{opacity:1} }
+
+    .stage-scroll { height: 500vh; position: relative; }
+    .stage-sticky { position: sticky; top: 64px; height: calc(100vh - 64px); display: flex; align-items: center; justify-content: center; border-top: 1px solid var(--black); overflow: hidden; }
+    .stage-svg { width: 100%; height: 100%; position: absolute; inset: 0; }
+    .stage-caption { position: absolute; top: 48px; left: 48px; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray); z-index: 10; }
+    .stage-status { position: absolute; bottom: 48px; right: 48px; text-align: right; z-index: 10; }
+    .status-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--gray); text-transform: uppercase; margin-bottom: 4px; }
+    .status-value { font-size: 56px; font-weight: 900; line-height: 1; letter-spacing: -0.03em; }
+
+    .explanation { padding: 120px 48px; display: grid; grid-template-columns: 220px 1fr 1fr; gap: 0; align-items: start; border-top: 1px solid var(--black); }
+    .exp-label { font-size: clamp(40px, 2vw, 72px); font-weight: 900; line-height: 0.9; writing-mode: vertical-rl; text-orientation: mixed; letter-spacing: 0.1em; align-self: stretch; }
+    .exp-col { padding: 0 40px; }
+    .exp-col p { font-size: 14px; line-height: 1.85; color: var(--black); margin-bottom: 1.6em; word-break: keep-all; }
+    .exp-col p:last-child { margin-bottom: 0; }
+        footer {
+      background: #0a0a0a;
+      color: #ffffff;
+      padding: 56px 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 48px;
+    }
+    .footer-col { display: flex; flex-direction: column; gap: 12px; }
+    .footer-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #888; margin-bottom: 4px; }
+    .footer-title { font-size: 15px; font-weight: 700; line-height: 1.5; color: #ffffff; }
+    .footer-sub { font-size: 12px; color: #888; letter-spacing: 0.04em; }
+    .footer-contact { font-size: 13px; color: #ccc; line-height: 2; }
+    .footer-copy { font-size: 11px; color: #555; margin-top: 8px; letter-spacing: 0.04em; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-left"><div class="nav-tagline">Same image<br>different brain<br>different answer</div></div>
+    <div class="nav-right">
+      <div class="nav-site-title">Optical Illusion</div>
+      <div class="nav-links">
+        <a href="index.html#types">←</a>
+        <a href="index.html#intro">Intro</a>
+        <a href="index.html#types">Types</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <img src="circle.png" alt="ebbinghaus" style="display:block; width:100%; height:auto; max-height:calc(100vh - 320px); object-fit:contain; opacity:0.85;">
+    <h1 class="hero-title">Ebbinghaus</h1>
+  </section>
+
+  <!-- STAGE -->
+  <div class="stage-scroll" id="stage-scroll">
+    <div class="stage-sticky">
+      <div class="stage-caption" id="stage-caption">왼쪽 원이 더 커 보인다</div>
+
+      <svg class="stage-svg" id="stage-svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid meet">
+
+        <!-- 왼쪽 주변 원 (작음) -->
+        <g id="surround-left" opacity="1">
+          <circle cx="350" cy="270" r="22" fill="#0a0a0a"></circle>
+          <circle cx="350" cy="490" r="22" fill="#0a0a0a"></circle>
+          <circle cx="252" cy="322" r="22" fill="#0a0a0a"></circle>
+          <circle cx="448" cy="322" r="22" fill="#0a0a0a"></circle>
+          <circle cx="252" cy="438" r="22" fill="#0a0a0a"></circle>
+          <circle cx="448" cy="438" r="22" fill="#0a0a0a"></circle>
+        </g>
+
+        <!-- 오른쪽 주변 원 (큼) -->
+        <g id="surround-right" opacity="1">
+          <circle cx="850" cy="225" r="70" fill="#0a0a0a"></circle>
+          <circle cx="850" cy="535" r="70" fill="#0a0a0a"></circle>
+          <circle cx="715" cy="302" r="70" fill="#0a0a0a"></circle>
+          <circle cx="985" cy="302" r="70" fill="#0a0a0a"></circle>
+          <circle cx="715" cy="458" r="70" fill="#0a0a0a"></circle>
+          <circle cx="985" cy="458" r="70" fill="#0a0a0a"></circle>
+        </g>
+
+        <!-- 중앙 빨간 원 두 개 — 항상 r=60으로 동일 -->
+        <!-- phase1: 양쪽에 떨어져 있다가 -->
+        <!-- phase2: 주변 원 사라지고 -->
+        <!-- phase3: 화면 중앙으로 모여서 나란히 -->
+        <circle id="circle-left" cx="350" cy="400" r="60" fill="#e03030"></circle>
+        <circle id="circle-right" cx="850" cy="400" r="60" fill="#e03030"></circle>
+
+        <!-- 같다 표시 -->
+        <g id="equal-group" opacity="0">
+          <text x="600" y="310" text-anchor="middle" font-family="Paperlogy, sans-serif" font-size="16" font-weight="900" fill="#aaa" letter-spacing="0.2em">SAME SIZE</text>
+        </g>
+
+      </svg>
+
+      <div class="stage-status">
+        <div class="status-label">Progress</div>
+        <div class="status-value" id="status-value">0%</div>
+      </div>
+    </div>
+  </div>
+
+  <section class="explanation">
+    <div class="exp-label">에빙하우스 착시</div>
+    <div class="exp-col">
+      <p>에빙하우스 착시(Ebbinghaus Illusion)는 19세기 독일의 심리학자 헤르만 에빙하우스(Hermann Ebbinghaus)가 발견한 착시 현상이다. 크기가 같은 두 원을 하나는 작은 원들로, 다른 하나는 큰 원들로 둘러싸면 — 작은 원들에 둘러싸인 원이 더 크게, 큰 원들에 둘러싸인 원이 더 작게 보인다.</p>
+      <p>뇌는 사물의 크기를 절대적인 값이 아니라 주변과의 상대적인 관계로 판단한다. 작은 것들 사이에 있으면 크게 느껴지고, 큰 것들 사이에 있으면 작게 느껴진다. 이것은 우리가 세상을 얼마나 맥락 의존적으로 인식하는지를 보여주는 강력한 증거다.</p>
+    </div>
+    <div class="exp-col">
+      <p>에빙하우스 착시는 단순한 시각적 오류를 넘어 인지과학에서 중요한 의미를 갖는다. 연구에 따르면 이 착시는 크기 지각뿐 아니라 실제 행동에도 영향을 미친다. 사람들은 착시 속에서 물체를 집을 때 손의 벌림 정도를 실제 크기가 아닌 지각된 크기에 맞추는 경향이 있다.</p>
+      <p>이는 시각 정보를 처리하는 경로가 두 가지임을 시사한다. 하나는 "무엇인가"를 인식하는 경로, 다른 하나는 "행동을 위한" 경로다. 에빙하우스 착시는 전자에만 영향을 미치며, 이 두 경로가 서로 다른 방식으로 작동한다는 사실을 드러낸다.</p>
+    </div>
+  </section>
+
+    <footer>
+    <div class="footer-col">
+      <div class="footer-label">Project</div>
+      <div class="footer-title">Optical Illusion<br>Archive</div>
+      <div class="footer-sub">웹 퍼블리싱 기말 프로젝트</div>
+      <div class="footer-sub">2025. 06.</div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-label">About</div>
+      <div class="footer-title" style="font-size:13px; font-weight:400; line-height:1.8; color:#aaa;">
+        눈은 보지 않는다. 예측한다.<br>
+        이 아카이브는 시각이 객관적 기록이 아니라<br>
+        능동적 해석이라는 것의 증거들을 모은다.
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-label">Contact</div>
+      <div class="footer-contact">
+        +82 10-7714-0155<br>
+        kcyhuman@seoultech.ac.kr<br>
+        Seoul, Republic of Korea
+      </div>
+      <div class="footer-copy">
+        24101008 김채윤<br>
+        © 2026 Optical Illusion Archive. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function clamp(v, a, b) { return Math.min(b, Math.max(a, v)); }
+    function invlerp(a, b, v) { return clamp((v - a) / (b - a), 0, 1); }
+    function lerp(a, b, t) { return a + (b - a) * t; }
+
+    // phase1: 0~0.4  — 주변 원 fade out
+    // phase2: 0.4~0.8 — 두 빨간 원이 중앙으로 모임 (왼:350→480, 오:850→720)
+    // phase3: 0.8~1.0 — SAME SIZE 등장
+
+    function update(progress) {
+      const p1 = invlerp(0,   0.4,  progress);
+      const p2 = invlerp(0.4, 0.8,  progress);
+      const p3 = invlerp(0.8, 1.0,  progress);
+
+      // 주변 원 fade out
+      document.getElementById('surround-left').setAttribute('opacity',  1 - p1);
+      document.getElementById('surround-right').setAttribute('opacity', 1 - p1);
+
+      // 두 원 중앙으로 이동
+      const lx = lerp(350, 480, p2);
+      const rx = lerp(850, 720, p2);
+      document.getElementById('circle-left').setAttribute('cx',  lx);
+      document.getElementById('circle-right').setAttribute('cx', rx);
+
+      // 같다 표시
+      document.getElementById('equal-group').setAttribute('opacity', p3);
+
+      // 캡션
+      const cap = document.getElementById('stage-caption');
+      if      (progress < 0.05) cap.textContent = '왼쪽 원이 더 커 보인다';
+      else if (progress < 0.4)  cap.textContent = '주변의 원을 없애면?';
+      else if (progress < 0.8)  cap.textContent = '두 원을 나란히 놓으면?';
+      else                      cap.textContent = '원 크기가 같다';
+
+      document.getElementById('status-value').textContent = Math.round(progress * 100) + '%';
+    }
+
+    function onScroll() {
+      const el = document.getElementById('stage-scroll');
+      const rect = el.getBoundingClientRect();
+      const scrollable = el.offsetHeight - window.innerHeight;
+      const scrolled = -(rect.top - 64);
+      update(clamp(scrolled / scrollable, 0, 1));
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    update(0);
+  </script>
+
+
+
+</body>
+</html>

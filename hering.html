@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hering — Optical Illusion</title>
+  <style>
+    @font-face { font-family: 'Paperlogy'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-4Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+    @font-face { font-family: 'Paperlogy'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-7Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+    @font-face { font-family: 'Paperlogy'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-9Black.woff2') format('woff2'); font-weight: 900; font-display: swap; }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --black: #0a0a0a; --white: #ffffff; --gray: #888; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Paperlogy', sans-serif; background: var(--white); color: var(--black); min-width: 900px; overflow-x: hidden; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: stretch; height: 64px; background: var(--black); }
+    .nav-left { display: flex; flex-direction: column; justify-content: center; padding: 10px 24px; flex: 1; }
+    .nav-tagline { font-size: 12px; font-weight: 700; color: var(--white); line-height: 1.5; }
+    .nav-right { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; padding-top: 10px; }
+    .nav-site-title { font-size: 13px; font-weight: 700; color: var(--white); padding: 0 24px; }
+    .nav-links { display: flex; height: 32px; }
+    .nav-links a { display: flex; align-items: center; padding: 0 28px; font-size: 13px; font-weight: 700; color: var(--black); background: var(--white); text-decoration: none; border-left: 1px solid #ccc; }
+    .nav-links a:first-child { border-left: none; }
+    .nav-links a:hover { background: #e8e8e8; }
+
+    .hero { margin-top: 64px; height: calc(100vh - 64px); display: flex; flex-direction: column; justify-content: space-between; padding: 48px; position: relative; overflow: hidden; }
+    .hero-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .hero-title { font-size: clamp(48px, 7vw, 96px); font-weight: 900; line-height: 1.0; letter-spacing: -0.03em; position: relative; z-index: 2; }
+    .scroll-hint { position: absolute; bottom: 48px; right: 48px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--gray); display: flex; align-items: center; gap: 10px; z-index: 2; }
+    .scroll-hint::after { content: ''; display: block; width: 1px; height: 48px; background: var(--gray); animation: scrollline 1.5s ease-in-out infinite; }
+    @keyframes scrollline { 0%,100%{opacity:0.3} 50%{opacity:1} }
+
+    .stage-scroll { height: 600vh; position: relative; }
+    .stage-sticky { position: sticky; top: 64px; height: calc(100vh - 64px); display: flex; align-items: center; justify-content: center; border-top: 1px solid var(--black); }
+    .stage-svg { width: 100%; height: 100%; position: absolute; inset: 0; }
+    .stage-caption { position: absolute; top: 48px; left: 48px; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray); z-index: 10; }
+    .stage-status { position: absolute; bottom: 48px; right: 48px; text-align: right; z-index: 10; }
+    .status-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--gray); text-transform: uppercase; margin-bottom: 4px; }
+    .status-value { font-size: 56px; font-weight: 900; line-height: 1; letter-spacing: -0.03em; }
+
+    .explanation { padding: 120px 48px; display: grid; grid-template-columns: 220px 1fr 1fr; gap: 0; align-items: start; border-top: 1px solid var(--black); }
+    .exp-label { font-size: clamp(40px, 2vw, 72px); font-weight: 900; line-height: 0.9; writing-mode: vertical-rl; text-orientation: mixed; letter-spacing: 0.1em; align-self: stretch; }
+    .exp-col { padding: 0 40px; }
+    .exp-col p { font-size: 14px; line-height: 1.85; color: var(--black); margin-bottom: 1.6em; word-break: keep-all; }
+    .exp-col p:last-child { margin-bottom: 0; }
+    footer {
+      background: #0a0a0a;
+      color: #ffffff;
+      padding: 56px 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 48px;
+    }
+    .footer-col { display: flex; flex-direction: column; gap: 12px; }
+    .footer-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #888; margin-bottom: 4px; }
+    .footer-title { font-size: 15px; font-weight: 700; line-height: 1.5; color: #ffffff; }
+    .footer-sub { font-size: 12px; color: #888; letter-spacing: 0.04em; }
+    .footer-contact { font-size: 13px; color: #ccc; line-height: 2; }
+    .footer-copy { font-size: 11px; color: #555; margin-top: 8px; letter-spacing: 0.04em; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-left"><div class="nav-tagline">Same image<br>different brain<br>different answer</div></div>
+    <div class="nav-right">
+      <div class="nav-site-title">Optical Illusion</div>
+      <div class="nav-links">
+        <a href="index.html#types">←</a>
+        <a href="index.html#intro">Intro</a>
+        <a href="index.html#types">Types</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <img src="hering.png" alt="hering illusion" style="display:block; width:100%; height:auto; max-height:calc(100vh - 220px); object-fit:cover;">
+
+    <h1 class="hero-title">Hering</h1>
+  </section>
+
+  <div class="stage-scroll" id="stage-scroll">
+    <div class="stage-sticky">
+      <div class="stage-caption" id="stage-caption">두 선이 휘어 보인다</div>
+
+      <svg class="stage-svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid meet">
+        <g id="rays-dual"><line x1="600" y1="-20" x2="-600" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="-600" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="-548.936170212766" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="-548.936170212766" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="-497.8723404255319" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="-497.8723404255319" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="-446.8085106382979" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="-446.8085106382979" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="-395.74468085106383" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="-395.74468085106383" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="-344.6808510638298" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="-344.6808510638298" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="-293.6170212765958" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="-293.6170212765958" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="-242.55319148936172" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="-242.55319148936172" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="-191.48936170212767" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="-191.48936170212767" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="-140.4255319148936" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="-140.4255319148936" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="-89.36170212765956" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="-89.36170212765956" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="-38.297872340425556" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="-38.297872340425556" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="12.765957446808443" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="12.765957446808443" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="63.829787234042556" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="63.829787234042556" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="114.89361702127655" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="114.89361702127655" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="165.95744680851067" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="165.95744680851067" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="217.02127659574467" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="217.02127659574467" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="268.0851063829788" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="268.0851063829788" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="319.1489361702128" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="319.1489361702128" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="370.2127659574468" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="370.2127659574468" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="421.2765957446809" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="421.2765957446809" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="472.3404255319149" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="472.3404255319149" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="523.4042553191489" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="523.4042553191489" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="574.4680851063829" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="574.4680851063829" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="625.5319148936169" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="625.5319148936169" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="676.5957446808511" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="676.5957446808511" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="727.6595744680851" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="727.6595744680851" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="778.7234042553193" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="778.7234042553193" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="829.7872340425531" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="829.7872340425531" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="880.8510638297873" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="880.8510638297873" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="931.9148936170213" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="931.9148936170213" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="982.9787234042551" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="982.9787234042551" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="1034.0425531914893" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="1034.0425531914893" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="1085.1063829787233" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="1085.1063829787233" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="1136.1702127659576" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="1136.1702127659576" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="1187.2340425531913" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="1187.2340425531913" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="1238.2978723404256" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="1238.2978723404256" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="1289.3617021276596" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="1289.3617021276596" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="1340.4255319148936" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="1340.4255319148936" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="1391.4893617021276" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="1391.4893617021276" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="1442.5531914893618" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="1442.5531914893618" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="1493.617021276596" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="1493.617021276596" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="1544.6808510638298" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="1544.6808510638298" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="1595.744680851064" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="1595.744680851064" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="1646.8085106382978" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="1646.8085106382978" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="1697.872340425532" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="1697.872340425532" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="1748.9361702127658" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="1748.9361702127658" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="-20" x2="1800" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line><line x1="600" y1="820" x2="1800" y2="400" stroke="#0a0a0a" stroke-width="1.2" opacity="0.6000000000000001"></line></g>   <!-- 위아래 두 소실점 -->
+        <g id="rays-single"></g> <!-- 중앙 한 소실점 -->
+        <line x1="0" y1="320" x2="1200" y2="320" stroke="#0a0a0a" stroke-width="5"></line>
+        <line x1="0" y1="480" x2="1200" y2="480" stroke="#0a0a0a" stroke-width="5"></line>
+        </g>
+      </svg>
+
+    </div>
+  </div>
+
+  <section class="explanation">
+    <div class="exp-label">헤링 착시</div>
+    <div class="exp-col">
+      <p>헤링 착시(Hering Illusion)는 1861년 독일의 생리학자 에발트 헤링(Ewald Hering)이 발견한 착시 현상이다. 중앙에서 방사선처럼 뻗어나가는 선들 위에 두 개의 평행선을 놓으면, 평행선이 가운데 부분이 바깥쪽으로 휘어 보인다. 실제로는 완전히 직선이다.</p>
+      <p>원인은 뇌가 방사선을 원근감의 단서로 해석하기 때문이다. 방사선은 멀리 뻗어나가는 공간처럼 읽히고, 뇌는 이 맥락에서 평행선을 3차원 공간의 곡선으로 재해석해버린다. 2차원 평면 위의 선이 3차원 공간의 규칙으로 처리되는 것이다.</p>
+    </div>
+    <div class="exp-col">
+      <p>헤링 착시는 방사선의 배치 방식에 따라 다른 형태로 나타난다. 중앙 한 점에서 퍼지는 방사선은 평행선을 바깥으로 휘어 보이게 하고, 위아래 두 점에서 퍼지는 방사선은 더 복잡한 왜곡을 만들어낸다. 같은 평행선이라도 어떤 배경이 놓이느냐에 따라 완전히 다르게 보인다.</p>
+      <p>이 착시는 방사선의 밀도가 높을수록 강해진다. 선이 많아질수록 원근감 신호가 강해지고, 뇌의 보정이 더 강하게 작동하기 때문이다. 반대로 방사선이 사라지면 착시도 즉시 사라진다. 맥락이 전부다.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-col">
+      <div class="footer-label">Project</div>
+      <div class="footer-title">Optical Illusion<br>Archive</div>
+      <div class="footer-sub">웹 퍼블리싱 기말 프로젝트</div>
+      <div class="footer-sub">2025. 06.</div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-label">About</div>
+      <div class="footer-title" style="font-size:13px; font-weight:400; line-height:1.8; color:#aaa;">
+        눈은 보지 않는다. 예측한다.<br>
+        이 아카이브는 시각이 객관적 기록이 아니라<br>
+        능동적 해석이라는 것의 증거들을 모은다.
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-label">Contact</div>
+      <div class="footer-contact">
+        +82 10-7714-0155<br>
+        kcyhuman@seoultech.ac.kr<br>
+        Seoul, Republic of Korea
+      </div>
+      <div class="footer-copy">
+        24101008 김채윤<br>
+        © 2026 Optical Illusion Archive. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function clamp(v, a, b) { return Math.min(b, Math.max(a, v)); }
+    function invlerp(a, b, v) { return clamp((v - a) / (b - a), 0, 1); }
+    function lerp(a, b, t) { return a + (b - a) * t; }
+
+    const MAX_RAYS = 48;
+
+    function buildDualRays(container, count, opacity) {
+      container.innerHTML = '';
+      if (count === 0) return;
+      for (let i = 0; i < count; i++) {
+        const t = i / (count - 1 || 1);
+        const x = -600 + t * 2400;
+
+        const tl = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        tl.setAttribute('x1', 600); tl.setAttribute('y1', -20);
+        tl.setAttribute('x2', x);   tl.setAttribute('y2', 400);
+        tl.setAttribute('stroke', '#0a0a0a'); tl.setAttribute('stroke-width', '1.2');
+        tl.setAttribute('opacity', opacity);
+        container.appendChild(tl);
+
+        const bl = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        bl.setAttribute('x1', 600); bl.setAttribute('y1', 820);
+        bl.setAttribute('x2', x);   bl.setAttribute('y2', 400);
+        bl.setAttribute('stroke', '#0a0a0a'); bl.setAttribute('stroke-width', '1.2');
+        bl.setAttribute('opacity', opacity);
+        container.appendChild(bl);
+      }
+    }
+
+    function buildSingleRays(container, count, opacity) {
+      container.innerHTML = '';
+      if (count === 0) return;
+      for (let i = 0; i < count; i++) {
+        const angle = (i / count) * Math.PI * 2;
+        const x2 = 600 + Math.cos(angle) * 1000;
+        const y2 = 400 + Math.sin(angle) * 1000;
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', 600); line.setAttribute('y1', 400);
+        line.setAttribute('x2', x2);  line.setAttribute('y2', y2);
+        line.setAttribute('stroke', '#0a0a0a'); line.setAttribute('stroke-width', '1.2');
+        line.setAttribute('opacity', opacity);
+        container.appendChild(line);
+      }
+    }
+    function buildHeroRays(container) {
+      container.innerHTML = '';
+      const count = 20;
+      for (let i = 0; i < count; i++) {
+        const t = i / (count - 1);
+        const x = -100 + t * 1400;
+        const tl = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        tl.setAttribute('x1', 600); tl.setAttribute('y1', -20);
+        tl.setAttribute('x2', x);   tl.setAttribute('y2', 820);
+        tl.setAttribute('stroke', '#0a0a0a'); tl.setAttribute('stroke-width', '1.2'); tl.setAttribute('opacity', '0.35');
+        container.appendChild(tl);
+
+        const bl = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        bl.setAttribute('x1', 600); bl.setAttribute('y1', 820);
+        bl.setAttribute('x2', x);   bl.setAttribute('y2', -20);
+        bl.setAttribute('stroke', '#0a0a0a'); bl.setAttribute('stroke-width', '1.2'); bl.setAttribute('opacity', '0.35');
+        container.appendChild(bl);
+
+        const cl = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        cl.setAttribute('x1', 600); cl.setAttribute('y1', 400);
+        cl.setAttribute('x2', x);   cl.setAttribute('y2', 400 + (t - 0.5) * 600);
+        cl.setAttribute('stroke', '#0a0a0a'); cl.setAttribute('stroke-width', '1.2'); cl.setAttribute('opacity', '0.25');
+        container.appendChild(cl);
+      }
+    }
+    function update(progress) {
+
+      const p1 = invlerp(0,    0.3,  progress); // dual fade out
+      const p3 = invlerp(0.35, 0.65, progress); // single fade in
+      const p4 = invlerp(0.65, 0.9,  progress); // single fade out
+      const p5 = invlerp(0.9,  1.0,  progress); // label
+
+      const dualCount   = Math.round((1 - p1) * MAX_RAYS);
+      const singleCount = progress < 0.5
+        ? Math.round(p3 * MAX_RAYS)
+        : Math.round((1 - p4) * MAX_RAYS);
+
+      const dualOp   = 0.2 + (dualCount / MAX_RAYS) * 0.4;
+      const singleOp = 0.2 + (singleCount / MAX_RAYS) * 0.4;
+
+      buildDualRays(document.getElementById('rays-dual'), dualCount, dualOp);
+      buildSingleRays(document.getElementById('rays-single'), singleCount, singleOp);
+
+      document.getElementById('parallel-label').setAttribute('opacity', p5);
+
+      const cap = document.getElementById('stage-caption');
+      const total = dualCount + singleCount;
+      if      (progress < 0.05) cap.textContent = '두 선이 휘어 보인다';
+      else if (progress < 0.3)  cap.textContent = '선이 사라지면?';
+      else if (progress < 0.38) cap.textContent = '직선이다';
+      else if (progress < 0.65) cap.textContent = '배치가 달라지면?';
+      else if (progress < 0.9)  cap.textContent = '선이 사라지면?';
+      else                      cap.textContent = '두 선은 직선이다';
+
+      document.getElementById('status-value').textContent = total;
+    }
+
+    function onScroll() {
+      const el = document.getElementById('stage-scroll');
+      const rect = el.getBoundingClientRect();
+      const scrollable = el.offsetHeight - window.innerHeight;
+      const scrolled = -(rect.top - 64);
+      update(clamp(scrolled / scrollable, 0, 1));
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    update(0);
+  </script>
+
+
+
+</body>
+</html>

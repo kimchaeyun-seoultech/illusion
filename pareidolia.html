@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pareidolia — Optical Illusion</title>
+  <style>
+    @font-face {
+      font-family: 'Paperlogy';
+      src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-4Regular.woff2') format('woff2');
+      font-weight: 400; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Paperlogy';
+      src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-7Bold.woff2') format('woff2');
+      font-weight: 700; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Paperlogy';
+      src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-9Black.woff2') format('woff2');
+      font-weight: 900; font-display: swap;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --black: #0a0a0a; --white: #ffffff; --gray: #888; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Paperlogy', sans-serif;
+      background: var(--white);
+      color: var(--black);
+      min-width: 900px;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100; display: flex; align-items: stretch;
+      height: 64px; background: var(--black);
+    }
+    .nav-left { display: flex; flex-direction: column; justify-content: center; padding: 10px 24px; flex: 1; }
+    .nav-tagline { font-size: 12px; font-weight: 700; color: var(--white); line-height: 1.5; }
+    .nav-right { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; padding-top: 10px; }
+    .nav-site-title { font-size: 13px; font-weight: 700; color: var(--white); padding: 0 24px; }
+    .nav-links { display: flex; height: 32px; }
+    .nav-links a {
+      display: flex; align-items: center; padding: 0 28px;
+      font-size: 13px; font-weight: 700;
+      color: var(--black); background: var(--white);
+      text-decoration: none; border-left: 1px solid #ccc;
+    }
+    .nav-links a:first-child { border-left: none; }
+    .nav-links a:hover { background: #e8e8e8; }
+
+    /* HERO */
+    .hero {
+      margin-top: 64px;
+      height: calc(100vh - 64px);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 48px;
+      position: relative;
+      border-bottom: 1px solid var(--black);
+    }
+
+    .hero-img-wrap {
+      position: absolute;
+      top: 40px; left: 50%;
+      transform: translateX(-50%);
+      width: 1500px;
+      height: calc(100% - 240px);
+    }
+    .hero-img-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+    .hero-img-caption {
+      position: absolute;
+      bottom: -28px; left: 0;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--gray);
+      white-space: nowrap;
+    }
+    /* 강조 이미지 겹치기 */
+    .hero-img-wrap .img-hover {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .hero-img-wrap:hover .img-hover {
+      opacity: 1;
+    }
+
+    .hero-title {
+      font-size: clamp(48px, 7vw, 96px);
+      font-weight: 900;
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+    }
+
+    .scroll-hint {
+      position: absolute; bottom: 48px; right: 48px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.1em; color: var(--gray);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .scroll-hint::after {
+      content: ''; display: block; width: 1px; height: 48px;
+      background: var(--gray);
+      animation: scrollline 1.5s ease-in-out infinite;
+    }
+    @keyframes scrollline { 0%,100%{opacity:0.3} 50%{opacity:1} }
+
+    /* GRID */
+    .grid-section {
+      padding: 80px 48px;
+      border-bottom: 1px solid var(--black);
+    }
+
+    .grid-label {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--gray); margin-bottom: 40px;
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border-top: 1px solid var(--black);
+      border-left: 1px solid var(--black);
+    }
+
+    .photo-item {
+      position: relative;
+      border-right: 1px solid var(--black);
+      border-bottom: 1px solid var(--black);
+      overflow: hidden;
+      aspect-ratio: 1 / 1;
+      cursor: pointer;
+    }
+
+    .photo-item img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+
+    .photo-item .img-hover {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+
+    .photo-item:hover img { transform: scale(1.03); }
+    .photo-item:hover .img-hover { opacity: 1; }
+
+    .photo-placeholder {
+      width: 100%; height: 100%;
+      background: #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #bbb;
+      text-transform: uppercase;
+    }
+
+    /* EXPLANATION */
+    .explanation {
+      padding: 120px 48px;
+      display: grid;
+      grid-template-columns: 220px 1fr 1fr;
+      gap: 0;
+      align-items: start;
+      border-bottom: 1px solid var(--black);
+    }
+    .exp-label {
+      font-size: clamp(40px, 2vw, 72px);
+      font-weight: 900;
+      line-height: 0.9;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      letter-spacing: 0.1em;
+      align-self: stretch;
+    }
+    .exp-col {
+      padding: 0 40px;
+    }
+    .exp-col p {
+      font-size: 14px; line-height: 1.85;
+      color: var(--black); margin-bottom: 1.6em;
+      word-break: keep-all;
+    }
+    .exp-col p:last-child { margin-bottom: 0; }
+
+    /* FOOTER */
+    footer {
+      background: #0a0a0a;
+      color: #ffffff;
+      padding: 56px 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 48px;
+    }
+    .footer-col { display: flex; flex-direction: column; gap: 12px; }
+    .footer-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #888; margin-bottom: 4px; }
+    .footer-title { font-size: 15px; font-weight: 700; line-height: 1.5; color: #ffffff; }
+    .footer-sub { font-size: 12px; color: #888; letter-spacing: 0.04em; }
+    .footer-contact { font-size: 13px; color: #ccc; line-height: 2; }
+    .footer-copy { font-size: 11px; color: #555; margin-top: 8px; letter-spacing: 0.04em; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-left">
+      <div class="nav-tagline">Same image<br>different brain<br>different answer</div>
+    </div>
+    <div class="nav-right">
+      <div class="nav-site-title">Optical Illusion</div>
+      <div class="nav-links">
+        <a href="index.html#types">←</a>
+        <a href="index.html#intro">Intro</a>
+        <a href="index.html#types">Types</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-img-wrap">
+      <img src="vegetarian.png" alt="pareidolia example" class="img-base">
+      <img src="pareidolia_01_hover.jpg" alt="pareidolia highlighted" class="img-hover">
+      <div class="hero-img-caption">파레이돌리아 착시를 활용한 작품</div>
+    </div>
+
+    <h1 class="hero-title">Pareidolia</h1>
+  </section>
+
+  <!-- PHOTO GRID -->
+  <section class="grid-section">
+
+    <div class="photo-grid">
+
+      <div class="photo-item">
+        <img src="image1.png" alt="" class="img-base">
+        <img src="image1-1.png" alt="" class="img-hover">
+      </div>
+
+      <div class="photo-item">
+        <img src="image2.png" alt="" class="img-base">
+        <img src="image2-1.png" alt="" class="img-hover">
+      </div>
+
+      <div class="photo-item">
+        <img src="image3.png" alt="" class="img-base">
+        <img src="image3-1.png" alt="" class="img-hover">
+      </div>
+
+      <div class="photo-item">
+        <img src="image4.png" alt="" class="img-base">
+        <img src="image4-1.png" alt="" class="img-hover">
+      </div>
+
+      <div class="photo-item">
+        <img src="image5.png" alt="" class="img-base">
+        <img src="image5-1.png" alt="" class="img-hover">
+      </div>
+
+      <div class="photo-item">
+        <img src="image6.png" alt="" class="img-base">
+        <img src="image6-1.png" alt="" class="img-hover">
+      </div>
+
+      <div class="photo-item">
+        <img src="image7.png" alt="" class="img-base">
+        <img src="image7-1.png" alt="" class="img-hover">
+      </div>
+
+      <div class="photo-item">
+        <img src="image8.png" alt="" class="img-base">
+        <img src="image8-1.png" alt="" class="img-hover">
+      </div>
+
+      <div class="photo-item">
+        <img src="image9.png" alt="" class="img-base">
+        <img src="image9-1.png" alt="" class="img-hover">
+      </div>
+
+    </div>
+  </section>
+
+  <!-- EXPLANATION -->
+  <section class="explanation">
+    <div class="exp-label">파레이돌리아</div>
+
+    <div class="exp-col">
+      <p>파레이돌리아(Pareidolia)는 그리스어 'para(옆, 너머)'와 'eidos(이미지, 형태)'가 합쳐진 단어다. 임의의 자극이나 형태에 의한 착각으로, 모호한 자극을 익숙한 자극으로 해석하는 현상이다. 달 표면에서 토끼를 보거나, 나무껍질에서 얼굴을 발견하거나, 건물 외벽에서 표정을 읽는 것이 모두 파레이돌리아에 해당한다.</p>
+
+      <p>파레이돌리아가 발생하는 원인에는 여러 가설이 있다. 하버드대 신경과학자 누친 하지카니 박사는 뇌 발달의 측면에서 설명한다. 인간은 성장 과정에서 사회적 뇌가 발달하며 얼굴을 감지하는 기능이 강화되는데, 이 때문에 추상적인 형상도 얼굴과 연관 지어 해석하게 된다는 것이다. 시카고대 신경과 교수 조엘 보스는 모호한 이미지와 개인의 주관적 기억이 결합해 불분명한 자극이 익숙한 이미지로 보이는 것이라고 설명한다.</p>
+    </div>
+
+    <div class="exp-col">
+      <p>또 다른 설명은 하향처리(Top-down processing)다. 뇌는 새로운 정보를 해석할 때 매번 처음부터 분석하는 대신, 이미 알고 있는 지식과 경험을 바탕으로 빠르게 판단한다. 달의 어두운 부분을 보고 문화나 경험에 따라 토끼, 사람, 게 등 서로 다른 형상을 떠올리는 것도 이 때문이다.</p>
+
+      <p>파레이돌리아는 오류가 아니라 생존 전략이다. 포식자나 동료의 얼굴을 빠르게 감지하는 능력은 생존에 직결됐고, 뇌는 "없는 얼굴도 있다고 판단하는" 쪽이 더 안전하다는 방향으로 진화했다. 심리학의 로르샤흐 잉크 반점 검사도 이 원리를 이용한 것이다. 우리가 무언가를 본다고 믿는 순간, 뇌는 이미 해석을 끝낸 뒤다.</p>
+    </div>
+  </section>
+
+<footer>
+    <div class="footer-col">
+      <div class="footer-label">Project</div>
+      <div class="footer-title">Optical Illusion<br>Archive</div>
+      <div class="footer-sub">웹 퍼블리싱 기말 프로젝트</div>
+      <div class="footer-sub">2025. 06.</div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-label">About</div>
+      <div class="footer-title" style="font-size:13px; font-weight:400; line-height:1.8; color:#aaa;">
+        눈은 보지 않는다. 예측한다.<br>
+        이 아카이브는 시각이 객관적 기록이 아니라<br>
+        능동적 해석이라는 것의 증거들을 모은다.
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-label">Contact</div>
+      <div class="footer-contact">
+        +82 10-7714-0155<br>
+        kcyhuman@seoultech.ac.kr<br>
+        Seoul, Republic of Korea
+      </div>
+      <div class="footer-copy">
+        24101008 김채윤<br>
+        © 2026 Optical Illusion Archive. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+
+
+</body>
+</html>

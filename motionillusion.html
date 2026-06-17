@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+	<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Motion Illusion — Optical Illusion</title>
+  <style>
+    @font-face { font-family: 'Paperlogy'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-4Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+    @font-face { font-family: 'Paperlogy'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-7Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+    @font-face { font-family: 'Paperlogy'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-9Black.woff2') format('woff2'); font-weight: 900; font-display: swap; }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --black: #0a0a0a; --white: #ffffff; --gray: #888; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Paperlogy', sans-serif; background: var(--white); color: var(--black); min-width: 900px; overflow-x: hidden; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: stretch; height: 64px; background: var(--black); }
+    .nav-left { display: flex; flex-direction: column; justify-content: center; padding: 10px 24px; flex: 1; }
+    .nav-tagline { font-size: 12px; font-weight: 700; color: var(--white); line-height: 1.5; }
+    .nav-right { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; padding-top: 10px; }
+    .nav-site-title { font-size: 13px; font-weight: 700; color: var(--white); padding: 0 24px; }
+    .nav-links { display: flex; height: 32px; }
+    .nav-links a { display: flex; align-items: center; padding: 0 28px; font-size: 13px; font-weight: 700; color: var(--black); background: var(--white); text-decoration: none; border-left: 1px solid #ccc; }
+    .nav-links a:first-child { border-left: none; }
+    .nav-links a:hover { background: #e8e8e8; }
+
+    /* HERO */
+    .hero {
+      margin-top: 64px;
+      height: calc(100vh - 64px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 48px;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--black);
+    }
+    .hero-title { font-size: clamp(48px, 7vw, 96px); font-weight: 900; line-height: 1.0; letter-spacing: -0.03em; position: relative; z-index: 2; }
+    .scroll-hint { position: absolute; bottom: 48px; right: 48px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--gray); display: flex; align-items: center; gap: 10px; z-index: 2; }
+    .scroll-hint::after { content: ''; display: block; width: 1px; height: 48px; background: var(--gray); animation: scrollline 1.5s ease-in-out infinite; }
+    @keyframes scrollline { 0%,100%{opacity:0.3} 50%{opacity:1} }
+
+    /* GRID */
+    .grid-section { padding: 80px 48px; border-bottom: 1px solid var(--black); }
+    .grid-label { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray); margin-bottom: 40px; }
+    .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-top: 1px solid var(--black); border-left: 1px solid var(--black); }
+    .photo-item { position: relative; border-right: 1px solid var(--black); border-bottom: 1px solid var(--black); overflow: hidden; aspect-ratio: 1 / 1; cursor: pointer; }
+    .photo-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity 0.3s ease; }
+    .photo-item:hover img { opacity: 0.5; }
+    .photo-item .overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
+    .photo-item:hover .overlay { opacity: 1; }
+    .overlay-icon { font-size: 32px; line-height: 1; }
+
+    /* LIGHTBOX */
+    .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+    .lightbox.active { opacity: 1; pointer-events: all; }
+    .lightbox img { max-width: 90vw; max-height: 90vh; object-fit: contain; display: block; animation: zoomin 0.3s ease; }
+    @keyframes zoomin { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .lightbox-close { position: absolute; top: 32px; right: 40px; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); cursor: pointer; text-transform: uppercase; }
+    .lightbox-close:hover { color: white; }
+
+    /* EXPLANATION */
+    .explanation { padding: 120px 48px; display: grid; grid-template-columns: 220px 1fr 1fr; gap: 0; align-items: start; border-top: 1px solid var(--black); }
+    .exp-label { font-size: clamp(40px, 2vw, 72px); font-weight: 900; line-height: 0.9; writing-mode: vertical-rl; text-orientation: mixed; letter-spacing: 0.1em; align-self: stretch; }
+    .exp-col { padding: 0 40px; }
+    .exp-col p { font-size: 14px; line-height: 1.85; color: var(--black); margin-bottom: 1.6em; word-break: keep-all; }
+    .exp-col p:last-child { margin-bottom: 0; }
+
+    footer {
+      background: #0a0a0a;
+      color: #ffffff;
+      padding: 56px 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 48px;
+    }
+    .footer-col { display: flex; flex-direction: column; gap: 12px; }
+    .footer-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #888; margin-bottom: 4px; }
+    .footer-title { font-size: 15px; font-weight: 700; line-height: 1.5; color: #ffffff; }
+    .footer-sub { font-size: 12px; color: #888; letter-spacing: 0.04em; }
+    .footer-contact { font-size: 13px; color: #ccc; line-height: 2; }
+    .footer-copy { font-size: 11px; color: #555; margin-top: 8px; letter-spacing: 0.04em; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-left"><div class="nav-tagline">Same image<br>different brain<br>different answer</div></div>
+    <div class="nav-right">
+      <div class="nav-site-title">Optical Illusion</div>
+      <div class="nav-links">
+        <a href="index.html#types">←</a>
+        <a href="index.html#intro">Intro</a>
+        <a href="index.html#types">Types</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <img src="rotation.png" alt="motion illusion" style="display:block; width:100%; height:auto; max-height:calc(100vh - 320px); object-fit:cover;">
+    <h1 class="hero-title">Motion Illusion</h1>
+  </section>
+
+  <section class="grid-section"></div>
+    <div class="photo-grid">
+      <div class="photo-item"><img src="motion1.png" alt=""><div class="overlay"><span class="overlay-icon">🔍</span></div></div>
+      <div class="photo-item"><img src="motion2.png" alt=""><div class="overlay"><span class="overlay-icon">🔍</span></div></div>
+      <div class="photo-item"><img src="motion3.png" alt=""><div class="overlay"><span class="overlay-icon">🔍</span></div></div>
+      <div class="photo-item"><img src="motion4.png" alt=""><div class="overlay"><span class="overlay-icon">🔍</span></div></div>
+      <div class="photo-item"><img src="motion5.png" alt=""><div class="overlay"><span class="overlay-icon">🔍</span></div></div>
+      <div class="photo-item"><img src="motion6.png" alt=""><div class="overlay"><span class="overlay-icon">🔍</span></div></div>
+      <div class="photo-item"><img src="motion7.png" alt=""><div class="overlay"><span class="overlay-icon">🔍</span></div></div>
+      <div class="photo-item"><img src="motion8.png" alt=""><div class="overlay"><span class="overlay-icon">🔍</span></div></div>
+      <div class="photo-item"><img src="motion9.png" alt=""><div class="overlay"><span class="overlay-icon">🔍</span></div></div>
+    </div>
+  </section>
+
+  <section class="explanation">
+    <div class="exp-label">자동 운동 효과</div>
+    <div class="exp-col">
+      <p>자동 운동 효과(Autokinetic Effect)를 포함한 모션 착시는 정지된 이미지에서 움직임을 지각하는 현상이다. 뇌는 시각 정보를 처리할 때 패턴의 반복, 명도 차이, 색상 대비를 바탕으로 움직임 신호를 생성하는데, 이 과정이 실제 움직임 없이도 작동할 때 착시가 발생한다.</p>
+      <p>대표적인 원인은 안구의 미세한 떨림인 안구진탕(Microsaccade)이다. 눈은 고정된 것처럼 보여도 끊임없이 미세하게 움직이는데, 고대비 반복 패턴과 결합하면 뇌가 이 움직임을 이미지의 움직임으로 해석해버린다.</p>
+    </div>
+    <div class="exp-col">
+      <p>모션 착시는 1990년대 일본의 심리학자 아키요시 키타오카(Akiyoshi Kitaoka)가 체계적으로 연구하고 대중화했다. 그가 만든 "회전하는 뱀(Rotating Snakes)" 패턴은 정지 이미지임에도 강렬한 회전감을 만들어내며 전 세계적으로 유명해졌다.</p>
+      <p>흥미로운 점은 피로하거나 카페인을 섭취한 상태일수록 착시가 더 강하게 느껴진다는 것이다. 뇌의 억제 기능이 약해질수록 오작동이 더 쉽게 일어난다. 착시의 강도는 곧 뇌의 상태를 반영한다.</p>
+    </div>
+  </section>
+
+  <div class="lightbox" id="lightbox">
+    <div class="lightbox-close" id="lightbox-close">close ✕</div>
+    <img id="lightbox-img" src="" alt="">
+  </div>
+
+  <footer>
+    <div class="footer-col">
+      <div class="footer-label">Project</div>
+      <div class="footer-title">Optical Illusion<br>Archive</div>
+      <div class="footer-sub">웹 퍼블리싱 기말 프로젝트</div>
+      <div class="footer-sub">2025. 06.</div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-label">About</div>
+      <div class="footer-title" style="font-size:13px; font-weight:400; line-height:1.8; color:#aaa;">
+        눈은 보지 않는다. 예측한다.<br>
+        이 아카이브는 시각이 객관적 기록이 아니라<br>
+        능동적 해석이라는 것의 증거들을 모은다.
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-label">Contact</div>
+      <div class="footer-contact">
+        +82 10-7714-0155<br>
+        kcyhuman@seoultech.ac.kr<br>
+        Seoul, Republic of Korea
+      </div>
+      <div class="footer-copy">
+        24101008 김채윤<br>
+        © 2026 Optical Illusion Archive. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+
+    document.querySelectorAll('.photo-item img').forEach(img => {
+      img.parentElement.addEventListener('click', () => {
+        lightboxImg.src = img.src;
+        lightboxImg.style.animation = 'none';
+        lightboxImg.offsetHeight;
+        lightboxImg.style.animation = '';
+        lightbox.classList.add('active');
+      });
+    });
+
+    document.getElementById('lightbox-close').addEventListener('click', () => {
+      lightbox.classList.remove('active');
+    });
+
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) lightbox.classList.remove('active');
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') lightbox.classList.remove('active');
+    });
+  </script>
+</body>
+</html>

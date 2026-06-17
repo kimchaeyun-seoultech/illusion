@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simultaneous Contrast — Optical Illusion</title>
+  <style>
+    @font-face { font-family: 'Paperlogy'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-4Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+    @font-face { font-family: 'Paperlogy'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-7Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+    @font-face { font-family: 'Paperlogy'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-9Black.woff2') format('woff2'); font-weight: 900; font-display: swap; }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --black: #0a0a0a; --white: #ffffff; --gray: #888; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Paperlogy', sans-serif; background: var(--white); color: var(--black); min-width: 900px; overflow-x: hidden; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: stretch; height: 64px; background: var(--black); }
+    .nav-left { display: flex; flex-direction: column; justify-content: center; padding: 10px 24px; flex: 1; }
+    .nav-tagline { font-size: 12px; font-weight: 700; color: var(--white); line-height: 1.5; }
+    .nav-right { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; padding-top: 10px; }
+    .nav-site-title { font-size: 13px; font-weight: 700; color: var(--white); padding: 0 24px; }
+    .nav-links { display: flex; height: 32px; }
+    .nav-links a { display: flex; align-items: center; padding: 0 28px; font-size: 13px; font-weight: 700; color: var(--black); background: var(--white); text-decoration: none; border-left: 1px solid #ccc; }
+    .nav-links a:first-child { border-left: none; }
+    .nav-links a:hover { background: #e8e8e8; }
+
+    /* HERO */
+    .hero { margin-top: 64px; height: calc(100vh - 64px); display: flex; flex-direction: column; justify-content: space-between; padding: 48px; position: relative; overflow: hidden; }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      display: flex;
+    }
+    .hero-bg-left {
+      flex: 1;
+      background: #f0f0f0;
+    }
+    .hero-bg-right {
+      flex: 1;
+      background: #1a1a1a;
+    }
+    .hero-squares {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 200px;
+    }
+    .hero-square {
+      width: 120px;
+      height: 120px;
+      background: #888;
+    }
+    .hero-title {
+      font-size: clamp(40px, 5.5vw, 80px);
+      font-weight: 900;
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      position: relative;
+      z-index: 2;
+      color: var(--black);
+    }
+    .scroll-hint { position: absolute; bottom: 48px; right: 48px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--gray); display: flex; align-items: center; gap: 10px; z-index: 2; }
+    .scroll-hint::after { content: ''; display: block; width: 1px; height: 48px; background: var(--gray); animation: scrollline 1.5s ease-in-out infinite; }
+    @keyframes scrollline { 0%,100%{opacity:0.3} 50%{opacity:1} }
+
+  
+    .stage-scroll { height: 500vh; position: relative; }
+    .stage-sticky {
+      position: sticky;
+      top: 64px;
+      height: calc(100vh - 64px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-top: 1px solid var(--black);
+      overflow: hidden;
+    }
+    .stage-bg {
+      position: absolute;
+      inset: 0;
+      display: flex;
+    }
+    .stage-bg-left  { flex: 1; }
+    .stage-bg-right { flex: 1; }
+    .stage-squares {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 200px;
+      z-index: 2;
+    }
+    .stage-square {
+      width: 120px;
+      height: 120px;
+      background: #888;
+      flex-shrink: 0;
+    }
+    .stage-caption { position: absolute; top: 48px; left: 48px; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray); z-index: 10; }
+    .stage-status { position: absolute; bottom: 48px; right: 48px; text-align: right; z-index: 10; }
+    .status-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--gray); text-transform: uppercase; margin-bottom: 4px; }
+    .status-value { font-size: 56px; font-weight: 900; line-height: 1; letter-spacing: -0.03em; }
+
+    /* same label */
+    .same-label {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing: 0.2em;
+      color: #aaa;
+      z-index: 10;
+      opacity: 0;
+      text-align: center;
+      margin-top: 100px;
+    }
+
+ 
+    .color-section {
+      border-top: 1px solid var(--black);
+      display: flex;
+      height: 480px;
+    }
+    .color-panel {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .color-panel-label {
+      position: absolute;
+      bottom: 24px;
+      left: 0; right: 0;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.5;
+    }
+    .color-square {
+      width: 100px;
+      height: 100px;
+      background: #888;
+    }
+
+    /* EXPLANATION */
+    .explanation { padding: 120px 48px; display: grid; grid-template-columns: 220px 1fr 1fr; gap: 0; align-items: start; border-top: 1px solid var(--black); }
+    .exp-label { font-size: clamp(40px, 2vw, 72px); font-weight: 900; line-height: 0.9; writing-mode: vertical-rl; text-orientation: mixed; letter-spacing: 0.1em; align-self: stretch; }
+    .exp-col { padding: 0 40px; }
+    .exp-col p { font-size: 14px; line-height: 1.85; color: var(--black); margin-bottom: 1.6em; word-break: keep-all; }
+    .exp-col p:last-child { margin-bottom: 0; }
+    footer {
+      background: #0a0a0a;
+      color: #ffffff;
+      padding: 56px 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 48px;
+    }
+    .footer-col { display: flex; flex-direction: column; gap: 12px; }
+    .footer-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #888; margin-bottom: 4px; }
+    .footer-title { font-size: 15px; font-weight: 700; line-height: 1.5; color: #ffffff; }
+    .footer-sub { font-size: 12px; color: #888; letter-spacing: 0.04em; }
+    .footer-contact { font-size: 13px; color: #ccc; line-height: 2; }
+    .footer-copy { font-size: 11px; color: #555; margin-top: 8px; letter-spacing: 0.04em; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-left"><div class="nav-tagline">Same image<br>different brain<br>different answer</div></div>
+    <div class="nav-right">
+      <div class="nav-site-title">Optical Illusion</div>
+      <div class="nav-links">
+        <a href="index.html#types">←</a>
+        <a href="index.html#intro">Intro</a>
+        <a href="index.html#types">Types</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <img src="square.png" alt="simultaneous contrast" style="display:block; width:100%; height:auto; max-height:calc(100vh - 220px); object-fit:contain;">
+
+    <h1 class="hero-title">Simultaneous Contrast</h1>
+  </section>
+
+  <!-- STAGE -->
+  <div class="stage-scroll" id="stage-scroll">
+    <div class="stage-sticky">
+      <div class="stage-caption" id="stage-caption">왼쪽 사각형이 더 어둡게 보인다</div>
+
+      <div class="stage-bg">
+        <div class="stage-bg-left" id="bg-left" style="background: rgb(240, 240, 240);"></div>
+        <div class="stage-bg-right" id="bg-right" style="background: rgb(26, 26, 26);"></div>
+      </div>
+
+      <div class="stage-squares">
+        <div class="stage-square"></div>
+        <div class="stage-square"></div>
+      </div>
+
+      <div class="same-label" id="same-label" style="opacity: 0;">SAME COLOR<br><span style="font-size:13px; font-weight:700; letter-spacing:0.05em">#888888</span></div>
+
+      <div class="stage-status">
+        <div class="status-label">Progress</div>
+        <div class="status-value" id="status-value">0%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 컬러 배경 섹션 -->
+  <div class="color-section">
+    <div class="color-panel" style="background:#ff0000;">
+      <div class="color-square"></div>
+      <div class="color-panel-label" style="color:white;">빨간 배경</div>
+    </div>
+    <div class="color-panel" style="background:#888; border-left:1px solid #666; border-right:1px solid #666;">
+      <div class="color-square"></div>
+      <div class="color-panel-label" style="color:white;">같은 배경</div>
+    </div>
+    <div class="color-panel" style="background:#0000ff;">
+      <div class="color-square"></div>
+      <div class="color-panel-label" style="color:white;">파란 배경</div>
+    </div>
+  </div>
+
+  <!-- EXPLANATION -->
+  <section class="explanation">
+    <div class="exp-label">동시 대비 착시</div>
+    <div class="exp-col">
+      <p>동시 대비(Simultaneous Contrast)는 같은 색이 주변 색에 따라 전혀 다르게 보이는 현상이다. 밝은 배경 위의 회색은 어둡게, 어두운 배경 위의 같은 회색은 밝게 보인다. 눈은 색을 절대적인 값으로 읽지 않고, 항상 주변과의 관계 속에서 상대적으로 판단한다.</p>
+      <p>이 현상을 처음 체계적으로 연구한 것은 19세기 프랑스 화학자 미셸 외젠 슈브뢸(Michel Eugène Chevreul)이다. 그는 직물 염색 공장에서 일하며 같은 색실이 주변 색에 따라 다르게 보인다는 사실을 발견했고, 이를 과학적으로 기록했다. 이후 인상주의 화가들이 이 원리를 회화에 적극적으로 활용했다.</p>
+    </div>
+    <div class="exp-col">
+      <p>동시 대비는 명도뿐 아니라 색상(hue)에도 작용한다. 회색을 빨간 배경 위에 놓으면 약간 초록빛으로, 파란 배경 위에 놓으면 약간 주황빛으로 보인다. 뇌가 주변 색의 보색 방향으로 인식을 보정하기 때문이다.</p>
+      <p>이 착시는 일상에서 끊임없이 작동한다. 같은 옷이 어떤 조합으로 입느냐에 따라 달라 보이고, 같은 벽 색이 주변 가구에 따라 달라 보이는 것 모두 동시 대비의 결과다. 우리가 보는 색은 물체에 있는 것이 아니라, 뇌가 맥락 속에서 만들어내는 것이다.</p>
+    </div>
+  </section>
+
+ <footer>
+    <div class="footer-col">
+      <div class="footer-label">Project</div>
+      <div class="footer-title">Optical Illusion<br>Archive</div>
+      <div class="footer-sub">웹 퍼블리싱 기말 프로젝트</div>
+      <div class="footer-sub">2025. 06.</div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-label">About</div>
+      <div class="footer-title" style="font-size:13px; font-weight:400; line-height:1.8; color:#aaa;">
+        눈은 보지 않는다. 예측한다.<br>
+        이 아카이브는 시각이 객관적 기록이 아니라<br>
+        능동적 해석이라는 것의 증거들을 모은다.
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-label">Contact</div>
+      <div class="footer-contact">
+        +82 10-7714-0155<br>
+        kcyhuman@seoultech.ac.kr<br>
+        Seoul, Republic of Korea
+      </div>
+      <div class="footer-copy">
+        24101008 김채윤<br>
+        © 2026 Optical Illusion Archive. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function clamp(v, a, b) { return Math.min(b, Math.max(a, v)); }
+    function invlerp(a, b, v) { return clamp((v - a) / (b - a), 0, 1); }
+    function lerp(a, b, t) { return a + (b - a) * t; }
+
+    // 배경색 보간 헬퍼
+    function lerpColor(c1, c2, t) {
+      const r = Math.round(lerp(c1[0], c2[0], t));
+      const g = Math.round(lerp(c1[1], c2[1], t));
+      const b = Math.round(lerp(c1[2], c2[2], t));
+      return `rgb(${r},${g},${b})`;
+    }
+
+    // 왼쪽 시작: 밝은 회색 #f0f0f0 → 중간 회색 #888
+    // 오른쪽 시작: 어두운 #1a1a1a → 중간 회색 #888
+    const LEFT_START  = [240, 240, 240];
+    const RIGHT_START = [26,  26,  26];
+    const MID         = [136, 136, 136];
+
+    function update(progress) {
+      const p1 = invlerp(0,   0.7, progress); // 배경 수렴
+      const p2 = invlerp(0.7, 1.0, progress); // same label 등장
+
+      const leftColor  = lerpColor(LEFT_START,  MID, p1);
+      const rightColor = lerpColor(RIGHT_START, MID, p1);
+
+      document.getElementById('bg-left').style.background  = leftColor;
+      document.getElementById('bg-right').style.background = rightColor;
+
+      document.getElementById('same-label').style.opacity = p2;
+
+      const cap = document.getElementById('stage-caption');
+      if      (progress < 0.05) cap.textContent = '왼쪽 사각형이 더 어둡게 보인다';
+      else if (progress < 0.7)  cap.textContent = '배경색이 같아지면?';
+      else                      cap.textContent = '두 사각형의 색은 같다';
+
+      document.getElementById('status-value').textContent = Math.round(progress * 100) + '%';
+    }
+
+    function onScroll() {
+      const el = document.getElementById('stage-scroll');
+      const rect = el.getBoundingClientRect();
+      const scrollable = el.offsetHeight - window.innerHeight;
+      const scrolled = -(rect.top - 64);
+      update(clamp(scrolled / scrollable, 0, 1));
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    update(0);
+  </script>
+
+
+
+</body>
+</html>
